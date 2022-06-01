@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-data = pd.read_csv('../MyBook/Chapter-1-Housing-Price-Prediction/housing.csv')
+data = pd.read_csv('../../MyBook/Chapter-1-Housing-Price-Prediction/housing.csv')
 
 # acquire the housing prices
 prices = data["MEDV"]

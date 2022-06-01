@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Load the dataset
-data = pd.read_csv('../MyBook/Chapter-1-Housing-Price-Prediction/housing.csv')
+data = pd.read_csv('../../MyBook/Chapter-1-Housing-Price-Prediction/housing.csv')
 
 # the lowest price
 minimum_price = np.min(data["MEDV"])
