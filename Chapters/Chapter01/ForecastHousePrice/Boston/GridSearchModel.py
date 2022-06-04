@@ -39,7 +39,7 @@ def GridSearchFitModel(x, y):
     # 返回计算得到的最佳模型
     return grid.best_estimator_
 
-data = pd.read_csv('../../../MyBook/Chapter-1-Housing-Price-Prediction/housing.csv')
+data = pd.read_csv('../../../../MyBook/Chapter-1-Housing-Price-Prediction/housing.csv')
 
 # acquire the housing prices
 prices = data["MEDV"]
