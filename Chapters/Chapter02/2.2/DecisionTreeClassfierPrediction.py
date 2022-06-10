@@ -37,5 +37,7 @@ def PredictByDecisionTreeClassifier():
 	fpr_dt, tpr_dt, thresholds_dt = roc_curve(test_y, y_score_dt[:, 1])
 	
 	print("Decision Tree Classifier AUC is: {:.3f}".format(roc_auc_score(test_y, y_score_dt[:, 1])))
+	
+	return fpr_dt, tpr_dt
 
 PredictByDecisionTreeClassifier()

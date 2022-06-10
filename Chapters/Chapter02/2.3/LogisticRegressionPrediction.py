@@ -25,4 +25,6 @@ def PredictByLogisticRegression():
 	
 	fpr_lr, tpr_lr, thresholds_lr = metrics.roc_curve(test_y, y_score_lr)
 	
+	return fpr_lr, tpr_lr
+	
 PredictByLogisticRegression()
