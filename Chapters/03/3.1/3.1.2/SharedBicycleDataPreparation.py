@@ -4,9 +4,9 @@ from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-def prepare():
+def Prepare():
 
-	rides = pd.read_csv ( '../../MyBook/Chapter-3-Bike-Sharing-Analysis/hour.csv')
+	rides = pd.read_csv ( '../../../../MyBook/Chapter-3-Bike-Sharing-Analysis/hour.csv')
 	head = rides.head()
 
 	print(head)
@@ -16,7 +16,7 @@ def prepare():
 
 	# 绘制的图的标注采用中文，可以使用如下方式
 	# 变量font_path 是字体地址，读者使用自己的计算机或者服务器上的中文字体即可
-	font_path = '../../MyBook/Songti.ttc'
+	font_path = '../../../../MyBook/Songti.ttc'
 	font = FontProperties(fname = font_path, size = "large", weight = "medium")
 
 	# 创建两个绘图
@@ -152,6 +152,81 @@ def prepare():
 	# 设罝图标题
 	ax_by_hour.set_title(u"在四季里，以时为计数单位的每小时平均骑行人数", fontproperties = font)
 
-	plt.show()
+	# 创建一个绘图
 
-prepare()
+	figure, (ax_by_hour_weekday) = plt.subplots(1, 1)
+
+	# 设置绘图大小
+	figure.set_size_inches(13, 7)
+
+	# 将工作日数字转换成对应的兴起及字符串
+	ride_feature_copied["weekday"] = ride_feature_copied.weekday.map({0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"})
+
+	# 对工作日和双休日各骑行人数分组和排序，然后计算均值
+	# 通过reset_index()函数重制索引并创建一个新的DataFrame或者Series对象
+	hour_weekday_counts = pd.DataFrame(ride_feature_copied.groupby(["hr", "weekday"], sort = True)["cnt"].mean()).reset_index()
+
+	# 绘制散点图
+	# 参数1: 所有要绘制的数据
+	# 参数2: x表示X轴的数据，数据字段名是hour，数据在data里
+	# 参数3: y表示Y轴的数据，数据字段名是cnt，数据在data里
+	# 参数4: 根据指定字段的数据来绘制彩色的点
+	# 参数5: 点与点之间是否绘制线来连接
+	# 参数6: 被绘制的对象
+	# 参数7: 用不同的标记符号绘制不同的类别
+
+	sb.pointplot(data = hour_weekday_counts, x = hour_weekday_counts["hr"], y = hour_weekday_counts["cnt"], hue = hour_weekday_counts["weekday"], join = True, ax = ax_by_hour_weekday, markers = ["+", "o", "*", "^", "x", "h", "s"])
+
+	# 设置图的X轴文字
+	ax_by_hour_weekday.set_xlabel(u"一天里的每时", fontproperties = font)
+	# 设置图的Y轴文字
+	ax_by_hour_weekday.set_ylabel(u"骑行人数", fontproperties = font)
+	# 设置图的标题
+	ax_by_hour_weekday.set_title(u"在工作日和休息日，以时为技术单位的没下市平均骑行人数", fontproperties = font)
+
+	# 创建一个绘图
+	figure, ax_by_hour_casual_registered = plt.subplots(1)
+
+	# 设置绘图大小
+	figure.set_size_inches(13, 7)
+
+	# pd.melt()方法表示从宽格式到长格式的转换数据，可选择设置标识符变量
+	# 这里标识符字段是hr，变量字段是casual或者registered的新字段名variable，而值是value
+	hour_casual_registered_data = pd.melt(rides[["hr", "casual", "registered"]], id_vars = ["hr"], value_vars = ["casual", "registered"])
+
+	#然后通过reset_index()函数重置索引并创建一个新的DataFrame或Series对象
+	# variable表示已注册/临时用户，而value表示骑行人数
+	hour_casual_registered_data = pd.DataFrame(hour_casual_registered_data.groupby(["hr", "variable"], sort = True)["value"].mean()).reset_index()
+
+	# 绘制散点图
+	# 参数1: 所有要绘制的数据
+	# 参数2: x表示X轴的数据，数据字段名是hr，数据在data里
+	# 参数3: y表示Y轴的数据，数据字段名是value，数据在data里
+	# 参数4: 会根据制定字段的数据来绘制彩色的点
+	# 参数5: 绘制的色彩顺序
+	# 参数6: 点与点之间是否绘制线来连接
+	# 参数7: 被绘图的对象
+	# 参数8: 用不同的标记符号绘制不同的类别
+	#
+
+	sb.pointplot(data = hour_casual_registered_data,
+				 x = hour_casual_registered_data["hr"],
+				 y = hour_casual_registered_data["value"],
+				 hue = hour_casual_registered_data["variable"],
+				 hue_order = ["casual", "registered"],
+				 join = True,
+				 ax = ax_by_hour_casual_registered,
+				 markers = ["p", "s"])
+
+	# 设置图的X轴标题
+	ax_by_hour_casual_registered.set_xlabel(u"一天里的每时", fontproperties = font)
+	# 设置图的Y轴标题
+	ax_by_hour_casual_registered.set_ylabel(u"骑行人数", fontproperties = font)
+	# 设置图的标题
+	ax_by_hour_casual_registered.set_title(u"根据用户类型来计算每小时平均骑行人数", fontproperties = font)
+
+	plt.show()
+	
+	return rides
+
+Prepare()
