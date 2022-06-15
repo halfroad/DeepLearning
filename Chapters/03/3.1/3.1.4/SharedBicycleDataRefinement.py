@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 
 import sys
-sys.path.insert(1, "../3.1.3/")
+sys.path.insert(1, "../../3.1/3.1.3/")
 
 from SharedBicycleDataPreprocessing import Preprocess
 
@@ -21,4 +21,5 @@ def Refine():
 	print("X_valid.shape = {}, y_valid.shape = {}".format(X_valid.shape, y_valid.shape))
 	print("X_test.shape = {}, y_test.shape = {}".format(X_test.shape, y_test.shape))
 	
-Refine()
+	return X_train, X_test, X_valid, y_train, y_test, y_valid
+	

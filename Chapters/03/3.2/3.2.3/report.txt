@@ -1,0 +1,40 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 1 files
+Detected 3 issues that require attention
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+File: LongShortTermMemoryModel.py
+--------------------------------------------------------------------------------
+LongShortTermMemoryModel.py:57:18: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+LongShortTermMemoryModel.py:77:11: WARNING: Using member tf.contrib.rnn.DropoutWrapper in deprecated module tf.contrib.rnn. (Manual edit required) tf.contrib.rnn.* has been deprecated, and widely used cells/functions will be moved to tensorflow/addons repository. Please check it there and file Github issues if necessary.
+LongShortTermMemoryModel.py:77:11: ERROR: Using member tf.contrib.rnn.DropoutWrapper in deprecated module tf.contrib. tf.contrib.rnn.DropoutWrapper cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+================================================================================
+Detailed log follows:
+
+================================================================================
+--------------------------------------------------------------------------------
+Processing file 'LongShortTermMemoryModel.py'
+ outputting to 'LongShortTermMemoryModel-v2.py'
+--------------------------------------------------------------------------------
+
+37:13: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+38:14: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+41:15: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+44:19: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+47:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+47:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+49:15: INFO: Renamed 'tf.contrib.rnn.MultiRNNCell' to 'tf.compat.v1.nn.rnn_cell.MultiRNNCell'
+54:27: INFO: Renamed 'tf.nn.dynamic_rnn' to 'tf.compat.v1.nn.dynamic_rnn'
+57:18: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+60:11: INFO: tf.losses.mean_squared_error requires manual check. tf.losses have been replaced with object oriented versions in TF 2.0 and after. The loss function calls have been converted to compat.v1 for backward compatibility. Please update these calls to the TF 2.0 versions.
+60:11: INFO: Renamed 'tf.losses.mean_squared_error' to 'tf.compat.v1.losses.mean_squared_error'
+63:16: INFO: Renamed 'tf.train.AdamOptimizer' to 'tf.compat.v1.train.AdamOptimizer'
+67:15: INFO: Added keywords to args of function 'tf.reduce_mean'
+74:11: INFO: Renamed 'tf.contrib.rnn.BasicLSTMCell' to 'tf.compat.v1.nn.rnn_cell.BasicLSTMCell'
+74:58: INFO: Renamed 'tf.get_variable_scope' to 'tf.compat.v1.get_variable_scope'
+77:11: WARNING: Using member tf.contrib.rnn.DropoutWrapper in deprecated module tf.contrib.rnn. (Manual edit required) tf.contrib.rnn.* has been deprecated, and widely used cells/functions will be moved to tensorflow/addons repository. Please check it there and file Github issues if necessary.
+77:11: ERROR: Using member tf.contrib.rnn.DropoutWrapper in deprecated module tf.contrib. tf.contrib.rnn.DropoutWrapper cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+

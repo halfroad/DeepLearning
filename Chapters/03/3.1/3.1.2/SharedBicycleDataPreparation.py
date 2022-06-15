@@ -225,8 +225,6 @@ def Prepare():
 	# 设置图的标题
 	ax_by_hour_casual_registered.set_title(u"根据用户类型来计算每小时平均骑行人数", fontproperties = font)
 
-	plt.show()
+	#plt.show()
 	
 	return rides
-
-Prepare()

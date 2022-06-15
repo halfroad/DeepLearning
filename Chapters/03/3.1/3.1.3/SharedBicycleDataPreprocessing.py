@@ -1,7 +1,7 @@
 import pandas as pd
 
 import sys
-sys.path.insert(1, "../3.1.2/")
+sys.path.insert(1, "../../3.1/3.1.2/")
 
 from SharedBicycleDataPreparation import Prepare
 
