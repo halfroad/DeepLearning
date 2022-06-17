@@ -30,7 +30,7 @@ for i in range(10):
     print("Actual Winning Number is {}, Predicted Number is {}".format(y_test[i], math.ceil(yHat[i])))
     
 
-X_train = train_X.reshape((X_train.shape[0], X_train.shape[1], 1))
+X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))
 
 # Train the model
 lstmPredictorModel = LSTMTrain(X_train, y_train, True)
