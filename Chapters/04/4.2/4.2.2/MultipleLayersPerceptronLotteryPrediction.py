@@ -12,7 +12,7 @@ from SplitWinningNumbersSequences import SplitSequence
 def Predict(train_X, train_y, test_X, test_y):
     
     # Create the object of Multiple Layers Perceptron Classifier
-    model = MLPClassifier(hidden_layer_sizes = 128, batch_size = 64, solver = "adam", verbose = True)
+    model = MLPClassifier(hidden_layer_sizes = 128, batch_size = 64, solver = "adam", max_iter = 300, verbose = True)
     
     # Train the model
     model.fit(train_X, train_y)
