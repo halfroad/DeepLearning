@@ -16,7 +16,7 @@ def Prepare():
     winningNumbers = [int(''.join(digit)) for digit in winningNumbers]
     
     print(winningNumbers[: 10])
-    
+        
     df["中奖号码"] = winningNumbers
     
     print(df.head())

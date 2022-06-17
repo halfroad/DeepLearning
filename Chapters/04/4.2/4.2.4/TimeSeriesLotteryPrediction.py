@@ -1,6 +1,5 @@
 import math
 import sys
-import sys
 sys.path.insert(1, "../../4.1/4.1.2/")
 from LotteryWinningPredictionPreparation import Prepare
 
