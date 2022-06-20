@@ -1,5 +1,4 @@
 import quandl
-import os
 import pandas as pd
 
 def Init():
@@ -14,22 +13,18 @@ def AcquireStock(name):
     # Set the Date as the first column
     stock = stock.reset_index(level = 0)
     
-    apiKey = os.path.expanduser("~") + "/.quandl_apikey"
+    minimumDate = min(stock["Date"])
+    maximumDate = max(stock["Date"])
     
-    os.remove(apiKey)
-    
-    return stock
+    return stock, minimumDate, maximumDate
     
 Init()
 
 name = "BIDU"
-baiduStock = AcquireStock(name)
+baiduStock, minimumDate, maximumDate = AcquireStock(name)
 
 print(baiduStock.head())
 print(len(baiduStock))
-
-minimumDate = min(baiduStock["Date"])
-maximumDate = max(baiduStock["Date"])
 
 print("Baidu Stock is active from {} to {}.".format(minimumDate, maximumDate))
 
