@@ -75,7 +75,7 @@ def Train(X_train, y_train, X_test, y_test):
     
     _history = history.history
     
-    accuracyValue = _history["val_acc"]
+    accuracyValue = _history["val_accuracy"]
     _accuracyValue = accuracyValue[np.argmax(accuracyValue)]
     
     lossValue = _history["val_loss"]
