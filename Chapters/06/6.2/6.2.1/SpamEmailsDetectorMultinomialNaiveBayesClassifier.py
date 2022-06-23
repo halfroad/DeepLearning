@@ -1,9 +1,13 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
+import os
+import shutil
 
 import sys
+
 sys.path.insert(1, "../../6.1/6.1.2/")
+
 from SpamEmailNaturalLanguageToolkit import ProcessByNaturalLanguageToolkit
 from SpamEmailNaturalLanguageToolkit import SplitTrainTest
 
@@ -28,7 +32,7 @@ def Train():
     nbClassifier.fit(X_TrainTextCounts, y_train)
     
     # Predict
-    predictions = nbClassifier.predict(X_TrainTextCounts)
+    predictions = nbClassifier.predict(X_TestTextCounts)
     score = accuracy_score(y_test, predictions)
     
     print("The accuracy score is {:.7}%.".format(score * 100))
@@ -47,3 +51,9 @@ def Train():
 
 
 Train()
+
+name = "nltk_data"
+path = os.path.expanduser("~") + "/" + name
+
+if os.path.isdir(path):
+    shutil.rmtree(path)

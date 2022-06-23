@@ -11,12 +11,13 @@ def ProcessByNaturalLanguageToolkit():
 
     #nltk.download("punkt")
     
+    df = Prepare()
+    
     name = "nltk_data"
     path = os.path.expanduser("~") + "/" + name
-
-    shutil.copytree("../../" + name, path)
     
-    df = Prepare()
+    if not os.path.isdir(path):
+        shutil.copytree("../../" + name, path)
     
     df["tokens"] = df["text"].map(lambda text: nltk.tokenize.word_tokenize(text))
     
@@ -45,8 +46,6 @@ def ProcessByNaturalLanguageToolkit():
     df["lemmatizedText"] = df["punctuationText"].map(lambda text: lemmatizer.lemmatize(text))
     
     print(df["lemmatizedText"])
-    
-    shutil.rmtree(path)
     
     return df
 
