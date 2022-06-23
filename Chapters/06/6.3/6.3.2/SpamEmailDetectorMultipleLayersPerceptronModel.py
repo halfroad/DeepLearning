@@ -94,3 +94,5 @@ df = ProcessByNaturalLanguageToolkit()
 X_train, X_test, y_train, y_test = SplitTrainTest(df)
 
 model, history = Train(X_train, y_train, X_test, y_test)
+
+print(history.key())
