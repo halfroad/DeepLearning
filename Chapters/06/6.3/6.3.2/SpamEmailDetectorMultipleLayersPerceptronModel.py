@@ -3,6 +3,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Dropout
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 import sys
 
@@ -96,4 +98,39 @@ X_train, X_test, y_train, y_test = SplitTrainTest(df)
 
 model, history = Train(X_train, y_train, X_test, y_test)
 
-print(history.key())
+print(history.keys())
+
+# Plot the curve of verified accuracy for the model train
+plt.plot(history["val_accuracy"],
+         np.array(range(len(history["val_accuracy"]))),
+         marker = matplotlib.markers.CARETDOWNBASE,
+         label = "Val Accuracy")
+
+# Plot the curve of verified loss for the model train
+plt.plot(history["val_loss"],
+         np.array(range(len(history["val_loss"]))),
+         marker = matplotlib.markers.TICKRIGHT,
+         label = "Val Loss")
+
+
+# Plot the curve of accuracy for the model train
+plt.plot(history["accuracy"],
+         np.array(range(len(history["accuracy"]))),
+         marker = 'h',
+         label = "Train Accuracy")
+
+# Plot the curve of loss for the model train
+plt.plot(history["loss"],
+         np.array(range(len(history["loss"]))),
+         marker = 'h',
+         label = "Train Loss")
+
+plt.title("Accuracy and Loss")
+
+plt.xlabel("Accuracy or Loss Values")
+plt.ylabel("Epochs")
+
+# Top-Left
+plt.legend(loc = 2)
+
+plt.show()
