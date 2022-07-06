@@ -37,7 +37,7 @@ def EncodeOutput(sequences, vocabularySize):
         
     # Convert to np array
     y = np.array(ylist)
-    y = y.reshape(sequences.shape[0], sequences[1], vocabularySize)
+    y = y.reshape(sequences.shape[0], sequences.shape[1], vocabularySize)
     
     return y
 
