@@ -25,8 +25,8 @@ def Prepare():
     print("There are {} English-France pairs:".format(pairsLength))
     print("The length of shortest sentence in France is {}, the length of longest one is {}".format(min(francePairsLengths), max(francePairsLengths)))
     print("The length of shortest sentence in English is {}, the length of longest one is {}".format(min(englishPairsLengths), max(englishPairsLengths)))
-
-          
+    
+    return linePairs
     
 
 Prepare()
