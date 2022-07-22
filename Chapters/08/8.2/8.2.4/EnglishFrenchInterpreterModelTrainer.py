@@ -10,7 +10,7 @@ from EnglishFrenchInterpreterLongShortTermMemoryModel import Create
 
 def Train(model, X_train, y_train, X_test, y_test, modelFileName):
     
-    modelCheckPoint = ModelCheckPoint(modelFileName, monitor = "val_loss", verbose = 1, save_best_only = True, mode = "min")
+    modelCheckPoint = ModelCheckpoint(modelFileName, monitor = "val_loss", verbose = 1, save_best_only = True, mode = "min")
     earlyStopCallback = EarlyStopping(monitor = "val_loss", patience = 3)
     
     # Train the model    
