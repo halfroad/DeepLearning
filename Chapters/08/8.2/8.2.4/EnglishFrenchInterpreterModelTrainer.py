@@ -22,6 +22,6 @@ X_train, y_train, X_test, y_test, frenchVocabularySize, frenchLength, englishVoc
 # Create the model
 model = Create(frenchVocabularySize, englishVocabularySize, frenchLength, englishLength, 256)
 # Compile the model
-model.compile(optimizer = "adam", loss = "category_crossentropy")
+model.compile(optimizer = "adam", loss = "categorical_crossentropy")
 
 Train(model, X_train, y_train, X_test, y_test, modelFileName)
