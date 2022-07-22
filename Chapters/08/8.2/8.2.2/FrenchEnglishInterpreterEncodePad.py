@@ -67,8 +67,8 @@ def PrepareTrainTestData():
     y_test = EncodeSequences(englishTokenier, englishLength, test[:, 0])
     y_test = EncodeOutput(y_test, englishVocabularySize)
     
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_test, y_test, frenchVocabularySize, frenchLength, englishVocabularySize, englishLength
 
-X_train, y_train, X_test, y_test = PrepareTrainTestData()
+X_train, y_train, X_test, y_test, frenchVocabularySize, frenchLength, englishVocabularySize, englishLength = PrepareTrainTestData()
 
 print("X_train.shape = {}, y_train.shape = {}, X_test.shape = {}, y_test.shape = {}".format(X_train.shape, y_train.shape, X_test.shape, y_test.shape))
