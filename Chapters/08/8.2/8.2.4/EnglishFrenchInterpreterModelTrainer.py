@@ -1,4 +1,5 @@
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras import backend as bk
 
 import sys
 
@@ -23,5 +24,7 @@ X_train, y_train, X_test, y_test, frenchVocabularySize, frenchLength, englishVoc
 model = Create(frenchVocabularySize, englishVocabularySize, frenchLength, englishLength, 256)
 # Compile the model
 model.compile(optimizer = "adam", loss = "categorical_crossentropy")
+
+bk.clear_session()
 
 Train(model, X_train, y_train, X_test, y_test, modelFileName)
