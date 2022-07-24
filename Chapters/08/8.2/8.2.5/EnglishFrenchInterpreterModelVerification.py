@@ -79,7 +79,7 @@ def TestModel(model, tokenier, sources, rawDataset):
     actual, predicted = list(), list()
     
     # Iterate the sources
-    for i, source in enumberate(sources):
+    for i, source in enumerate(sources):
         
         # Predict the decoded French
         source = source.reshape(1, source.shape[0])
