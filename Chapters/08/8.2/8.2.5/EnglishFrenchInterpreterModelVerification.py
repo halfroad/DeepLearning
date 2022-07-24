@@ -38,7 +38,7 @@ def Verify():
     X_test = EncodeSequences(frenchTokenizer, frenchLenth, testDataset[:, 1])
     
     # Load the saved model
-    model = models.load_model("TranslatorWeightsModel.h5")
+    model = models.load_model("../8.2.4/TranslatorWeightsModel.h5")
     
     return model, X_train, X_test, trainDataset, testDataset, englishTokenizer, frenchTokenizer
     
@@ -85,7 +85,7 @@ def TestModel(model, tokenier, sources, rawDataset):
         source = source.reshape(1, source.shape[0])
         translation = PredictSequence(model, tokenier, source)
         
-        rawTarget, rawSource = rawDataset[i]
+        rawTarget, rawSource = rawDataset[i], rawDataset[i]
         
         if i < 10:
             
