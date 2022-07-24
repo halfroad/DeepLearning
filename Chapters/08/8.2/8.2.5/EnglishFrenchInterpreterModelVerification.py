@@ -18,11 +18,11 @@ def loadCleanSentences(fileName):
 def Verify():
     
     # Load the dataset
-    dataset = loadCleanSentences("../8.2.1/French2EnglishTop10000.pkl")
+    dataset = loadCleanSentences("French2EnglishTop10000.pkl")
     # Load the train data
-    trainDataset = loadCleanSentences("../8.2.1/French2EnglishTrain.pkl")
+    trainDataset = loadCleanSentences("French2EnglishTrain.pkl")
     # Load the test data
-    testDataset = loadCleanSentences("../8.2.1/French2EnglishTest.pkl")
+    testDataset = loadCleanSentences("French2EnglishTest.pkl")
 
     # Prepare the tokenizer for English
     englishTokenizer = CreateTokenizer(dataset[:, 0])
