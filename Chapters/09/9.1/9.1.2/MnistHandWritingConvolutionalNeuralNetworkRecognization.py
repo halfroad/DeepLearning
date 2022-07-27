@@ -1,24 +1,6 @@
 import tensorflow as tf
 
-def Prepare():
-    
-    mnist = tf.keras.datasets.mnist
-    
-    # import the dataset
-    (imagesTrain, labelsTrain), (imagesTest, labelsTest) = mnist.load_data()
-    
-    return imagesTrain, labelsTrain, imagesTest, labelsTest
-
-def Preprocess(imagesTrain, imagesTest):
-    
-    # Reshape
-    imagesTrain4D = imagesTrain.reshape(imagesTrain.shape[0], 28, 28, 1).astype("float32")
-    imagesTest4D = imagesTest.reshape(imagesTest.shape[0], 28, 28, 1).astype("float32")
-    
-    # Pixel standardization
-    imagesTrain, imagesTest = imagesTrain4D / 225.0, imagesTest4D / 225.0
-    
-    return imagesTrain, imagesTest
+from MnistHandWritingConvolutionalPreparation import Prepare
 
 def CreateModel():
     
@@ -48,9 +30,8 @@ def TrainModel(imagesTrain, lablesTrain):
     model.fit(x = imagesTrain, y = lablesTrain, validation_split = 0.2, epochs = 20, batch_size = 300, verbose = 2)
     
 
-imagesTrain, labelsTrain, imagesTest, labelsTest = Prepare()
-imagesTrain, imagesTest = Preprocess(imagesTrain, imagesTest)
+imagesTrain, labelsTrain, imagesTest, labelsTest, imagesValidation, labelsValidation = Prepare()
 
-print("imagesTrain.shape = {}, labelsTrain.shape = {}, imagesTest.shape = {}, labelsTest.shape = {}".format(imagesTrain.shape, labelsTrain.shape, imagesTest.shape, labelsTest.shape))
+print("imagesTrain.shape = {}, labelsTrain.shape = {}, imagesTest.shape = {}, labelsTest.shape = {}, imagesValidation = {}, labelsValidation = {}".format(imagesTrain.shape, labelsTrain.shape, imagesTest.shape, labelsTest.shape, imagesValidation.shape, labelsValidation.shape))
 
-TrainModel(imagesTrain, labelsTrain)
+#TrainModel(imagesTrain, labelsTrain)
