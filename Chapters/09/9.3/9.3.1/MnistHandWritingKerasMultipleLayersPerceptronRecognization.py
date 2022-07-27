@@ -104,4 +104,8 @@ def TrainModel():
     # Train the model
     model.fit(imagesTrain, labelsTrain, epochs = epochs, batch_size = batchSize, verbose = 1, validation_data = (imagesValidation, labelsValidation))
     
+    score = model.evaluate(imagesTest, labelsTest, verbose = 0)
+    
+    print("Test Accuracy: {}, Test Loss: {}, {}".format(score[1], score[0], score))
+    
 TrainModel()
