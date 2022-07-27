@@ -5,6 +5,10 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.optimizers import RMSprop
 
+import sys
+sys.path.insert(1, "../9.3.5/")
+from MnistHandWritingImagePrediction import Predict
+
 # Prepare the parameters
 # Size of samples for each training
 batchSize = 128
@@ -108,4 +112,11 @@ def TrainModel():
     
     print("Test Accuracy: {}, Test Loss: {}, {}".format(score[1], score[0], score))
     
+    image = imagesTest[7: 8]
+    
+    Predict(model, image)
+    
+    return model    
+    
 TrainModel()
+
