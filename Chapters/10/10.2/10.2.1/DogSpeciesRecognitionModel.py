@@ -71,7 +71,7 @@ def Evaluate(model, testTensors, y_test):
     model.load_weights("SavedModel/Weights.Best.From.Scratch.hdf5")
     
     # Acquire the dog species index from each image in test set
-    dogBreedPredications = [np.argmax(model.predicate(np.expand_dims(tensor, axis = 0))) for tensor in testTensors]
+    dogBreedPredications = [np.argmax(model.predict(np.expand_dims(tensor, axis = 0))) for tensor in testTensors]
     
     # Accuracy of test
     testAccuracy = 100 * np.sum(np.array(dogBreedPredications) == np.argmax(y_test, axis = 1)) / len(dogBreedPredications)
