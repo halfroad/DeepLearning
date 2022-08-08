@@ -36,15 +36,15 @@ def CreateTensors(X_train, X_validation, X_test):
     # The values of RGB, maximum is 255, minimum is 0
     
     # Process the train data
-    trainSensors = Paths2Tensor(X_train).astype(np.float32) / 255
+    trainTensors = Paths2Tensor(X_train).astype(np.float32) / 255
     
     # Process the validation data
-    trainSensors = Paths2Tensor(X_validation).astype(np.float32) / 255
+    validationTensors = Paths2Tensor(X_validation).astype(np.float32) / 255
     
     # Process the test data
-    trainSensors = Paths2Tensor(X_test).astype(np.float32) / 255
+    testTensors = Paths2Tensor(X_test).astype(np.float32) / 255
     
-    return trainSensors, trainSensors, trainSensors
+    return trainTensors, validationTensors, testTensors
     
 '''
 files, originalTargets, dogTargets = Prepare("../../DogSpecies/Images/")

@@ -1,6 +1,7 @@
 from keras.layers import Conv2D, MaxPool2D, GlobalAveragePooling2D
 from keras.layers import Dropout, Flatten, Dense
 from keras.models import Sequential
+from keras.callbacks import ModelCheckpoint
 
 import sys
 sys.path.insert(1, "../../10.1/10.1.2/")
@@ -11,7 +12,7 @@ from DogSpeciesRecognitionImagesNormalization import CreateTensors
 
 
 
-def CreateModel(trainSensors, classificationsNumber):
+def Create(trainSensors, classificationsNumber):
     
     # Create the model of Sequnetial
     model = Sequential()
@@ -46,11 +47,28 @@ def CreateModel(trainSensors, classificationsNumber):
     # Print the summary of model architecture
     print(model.summary())
     
+    return model
+
+def Train(model, trainTensors, validationTensors, y_train, y_validation):
     
+    # Compile the model
+    model.compile(optimizer="rmsprop", loss = "categorical_corssentropy", metrics = ["accuracy"])
+    
+    # Create an object of CheckPoint, specify the storage path, and create a SavedModels folder manually
+    # Parameter save_best_only means only the best train will be stored
+    checkPoint = ModelCheckpoint(filepath = "SavedModel/Weights.Best.From.Scratch.hdf5", verbose = 1, save_best_only = True)
+    
+    # Train the model
+    epochs = 20
+    
+    model.fit(trainTensors, y_train, validation_data = (validationTensors, y_validation), epochs = epochs, batch_size = 20, callbacks = [checkPoint], verbose = 1)
+
+
 files, originalTargets, dogTargets = Prepare("../../DogSpecies/Images/")
 
 X_train, X_test, y_train, y_test, X_validation, y_validation = Split(files, dogTargets)
 
-trainSensors, trainSensors, trainSensors = CreateTensors(X_train, X_validation, X_test)
+trainTensors, validationTensors, testTensors = CreateTensors(X_train, X_validation, X_test)
     
-CreateModel(trainSensors, classificationsNumber)
+model = Create(trainSensors, classificationsNumber)
+Train(model, trainTensors, validationTensors, y_train, y_validation)
