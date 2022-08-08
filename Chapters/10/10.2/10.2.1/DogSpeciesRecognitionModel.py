@@ -38,7 +38,7 @@ def CreateModel(trainSensors, classificationsNumber):
     model.add(GlobalAveragePooling2D())
     
     # Add the Dropoutl layer, 50% network node will be dropped out
-    mode.add(Dropout(0.5))
+    model.add(Dropout(0.5))
     
     # Add Output Layer, 120 species
     model.add(Dense(classificationsNumber, activation = "softmax"))
