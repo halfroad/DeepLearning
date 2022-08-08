@@ -52,7 +52,7 @@ def Create(trainSensors, classificationsNumber):
 def Train(model, trainTensors, validationTensors, y_train, y_validation):
     
     # Compile the model
-    model.compile(optimizer="rmsprop", loss = "categorical_corssentropy", metrics = ["accuracy"])
+    model.compile(optimizer="rmsprop", loss = "categorical_crossentropy", metrics = ["accuracy"])
     
     # Create an object of CheckPoint, specify the storage path, and create a SavedModels folder manually
     # Parameter save_best_only means only the best train will be stored
