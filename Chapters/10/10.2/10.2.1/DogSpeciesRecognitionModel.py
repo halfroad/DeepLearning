@@ -2,6 +2,7 @@ from keras.layers import Conv2D, MaxPool2D, GlobalAveragePooling2D
 from keras.layers import Dropout, Flatten, Dense
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
+import numpy as np
 
 import sys
 sys.path.insert(1, "../../10.1/10.1.2/")
@@ -64,6 +65,20 @@ def Train(model, trainTensors, validationTensors, y_train, y_validation):
     model.fit(trainTensors, y_train, validation_data = (validationTensors, y_validation), epochs = epochs, batch_size = 20, callbacks = [checkPoint], verbose = 1)
 
 
+def Evaluate(model, testTensors, y_test):
+    
+    # Load the model of the best validation weights
+    model.load_weights("SavedModel/Weights.Best.From.Scratch.hdf5")
+    
+    # Acquire the dog species index from each image in test set
+    dogBreedPredications = [np.argmax(model.predicate(np.expand_dims(tensor, axis = 0))) for tensor in testTensors]
+    
+    # Accuracy of test
+    testAccuracy = 100 * np.sum(np.array(dogBreedPredications) == np.argmax(y_test, axis = 1)) / len(dogBreedPredications)
+    
+    print("Test Accuracy: {:.4f}".format(testAccuracy))
+    
+    
 files, originalTargets, dogTargets = Prepare("../../DogSpecies/Images/")
 
 X_train, X_test, y_train, y_test, X_validation, y_validation = Split(files, dogTargets)
@@ -72,3 +87,5 @@ trainTensors, validationTensors, testTensors = CreateTensors(X_train, X_validati
     
 model = Create(trainTensors, classificationsNumber)
 Train(model, trainTensors, validationTensors, y_train, y_validation)
+
+Evaluate(model, testTensors, y_test)
