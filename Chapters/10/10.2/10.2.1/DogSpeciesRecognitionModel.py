@@ -70,5 +70,5 @@ X_train, X_test, y_train, y_test, X_validation, y_validation = Split(files, dogT
 
 trainTensors, validationTensors, testTensors = CreateTensors(X_train, X_validation, X_test)
     
-model = Create(trainSensors, classificationsNumber)
+model = Create(trainTensors, classificationsNumber)
 Train(model, trainTensors, validationTensors, y_train, y_validation)
