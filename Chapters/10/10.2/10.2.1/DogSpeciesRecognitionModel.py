@@ -17,7 +17,7 @@ def CreateModel(trainSensors, classificationsNumber):
     model = Sequential()
     
     # Add the input layer. The input layer should be the passed input_shape in order to represent the size of image. Depth is 16
-    model.add(Conv2D(filters = 16, kernel_size = (2, 2), strides = (1, 1), padding = "same", activation = "relu", input_shape = trainSensors.shape[1: 1]))
+    model.add(Conv2D(filters = 16, kernel_size = (2, 2), strides = (1, 1), padding = "same", activation = "relu", input_shape = trainSensors.shape[1:]))
     
     # Add the Maximum Pooling layer, size is 2 * 2, effetive scope is valid that means the data less than 2 * 2 will be dropped.
     model.add(MaxPool2D(pool_size = (2, 2)))
