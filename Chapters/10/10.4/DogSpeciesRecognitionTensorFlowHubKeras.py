@@ -1,6 +1,6 @@
 import tensorflow as tf
 import keras
-import tensorflow_hub as tfhub
+import tensorflow_hub as hub
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 
@@ -36,8 +36,9 @@ def Prepare():
     
 def LoadPretrainModel(x):
     
-    featureExtractorURL = "https://tfhub.dev/google/ImageNet/MobileNet_v2_100_224/Feature_Vector/2"
-    featureExtractorModule = tfhub.Module(featureExtractorURL)
+    # featureExtractorURL = "https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/5"
+    featureExtractorURL = "imagenet_mobilenet_v2_100_224_feature_vector_5"
+    featureExtractorModule = hub.Module(featureExtractorURL)
     
     return featureExtractorModule(x)
 
@@ -53,6 +54,6 @@ def CreateModel(imageFlow, inputImageSize):
     return model
 
 # DownloadImageNetDogs()
-#imageFlow, inputImageSize, stepsPerEpoch = Prepare()
-#CreateModel(imageFlow, inputImageSize)
-LoadPretrainModel(1)
+imageFlow, inputImageSize, stepsPerEpoch = Prepare()
+CreateModel(imageFlow, inputImageSize)
+# LoadPretrainModel(1)
