@@ -1,9 +1,10 @@
 import tensorflow as tf
 import keras
+import tensorflow_hub as tfhub
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 
-def Download():
+def DownloadImageNetDogs():
     
     path = keras.utils.get_file("Images", "http://vision.stanford.edu/aditya86/ImageNetDogs/images.tar", untar = True)
     
@@ -14,10 +15,10 @@ def Download():
     
 def Prepare():
     
-    imageDataGenerator = ImageDataGenerator(rescale = 1 / 255)
-    
     inputImageSize = (224, 224)
-    imageFlow = imageDataGenerator.flow_from_directory("/root/.keras/datasets/Images", target_size = inputImageSize, batch_size = 32, color_mode = "rgb", class_mode = "categorical")
+    
+    imageDataGenerator = ImageDataGenerator(rescale = 1 / 255)
+    imageFlow = imageDataGenerator.flow_from_directory("Images", target_size = inputImageSize, batch_size = 32, color_mode = "rgb", class_mode = "categorical")
     
     for imageBatch, labelBatch in imageFlow:
         
@@ -30,6 +31,28 @@ def Prepare():
     
     print("There are {} image samples, Batch Size is {}".format(imageFlow.samples, imageFlow.batch_size))
     print("A comprehensive train requires {} times.".format(stepsPerEpoch))
+    
+    return imageFlow, inputImageSize, stepsPerEpoch
+    
+def LoadPretrainModel(x):
+    
+    featureExtractorURL = "https://tfhub.dev/google/ImageNet/MobileNet_v2_100_224/Feature_Vector/2"
+    featureExtractorModule = tfhub.Module(featureExtractorURL)
+    
+    return featureExtractorModule(x)
 
-Download()
-Prepare()
+def CreateModel(imageFlow, inputImageSize):
+    
+    featuresExtractorLayer = keras.layers.Lambda(LoadPretrainModel, input_shape = inputImageSize + (3, ))
+    featuresExtractorLayer.trainable = False
+    
+    model = tf.keras.Sequential([featuresExtractorLayer, tf.keras.layers.Dense(imageFlow.num_classes, activation="softmax")])
+    
+    print(model.summary())
+    
+    return model
+
+# DownloadImageNetDogs()
+#imageFlow, inputImageSize, stepsPerEpoch = Prepare()
+#CreateModel(imageFlow, inputImageSize)
+LoadPretrainModel(1)
