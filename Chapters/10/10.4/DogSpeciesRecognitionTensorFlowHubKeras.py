@@ -176,7 +176,7 @@ def PredictDogSpecies(model, dogSpeciesNames, imagePath):
         maximumValue = prediction[argumentMaximum]
         prediction = np.delete(prediction, argumentMaximum)
         
-        return prediction, maximumArgument maximumValue
+        return prediction, maximumArgument, maximumValue
     
     def GetTopThreePredictedMaximumIndexValues(prediction):
         
