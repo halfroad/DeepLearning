@@ -35,7 +35,7 @@ def Prepare():
     
     print("There are {} image samples, Batch Size is {}".format(imageFlow.samples, imageFlow.batch_size))
     print("A comprehensive train requires {} times.".format(stepsPerEpoch))
-    
+        
     return imageFlow, inputImageSize, imageBatch, stepsPerEpoch
 
 def CreateModel(imageFlow, inputImageSize):
@@ -44,9 +44,7 @@ def CreateModel(imageFlow, inputImageSize):
 
     layers = [
         hub.KerasLayer(handle = featureExtractorURL, input_shape = inputImageSize + (3, ), trainable = False, name = "mobilenet_embedding"),
-        tf.keras.layers.Dense(imageFlow.num_classes, activation="softmax")
-
-        ]
+        tf.keras.layers.Dense(imageFlow.num_classes, activation="softmax")]
     model = tf.keras.Sequential(layers, name = "DogSpeciesFeatures")
         
     print(model.summary())
@@ -61,10 +59,10 @@ class CollectionBatchStats(tf.keras.callbacks.Callback):
             self.batchLosses = []
             self.batchAccuracies = []
             
-            def onBatchEnd(self, batch, logs = None):
+        def on_train_batch_end(self, batch, logs = None):
                 
-                self.batchLosses.append(logs["loss"])
-                self.batchAccuracies.append(logs["accuracy"])
+            self.batchLosses.append(logs["loss"])
+            self.batchAccuracies.append(logs["accuracy"])
 
 def TrainModel(model, imageFlow, stepsPerEpoch):
     
@@ -84,7 +82,7 @@ def PlotBatchStatistics(batchStats):
     plt.xlabel("Training Steps")
     
     # Show the pitch and lowest tide
-    plt.ylim([0, 2])
+    plt.ylim([0, 6])
     plt.plot(batchStats.batchLosses)
     
     plt.figure()
@@ -92,7 +90,7 @@ def PlotBatchStatistics(batchStats):
     plt.ylabel("Accuracy")
     plt.xlabel("Training Steps")
     
-    plt.ylim([0, 2])
+    plt.ylim([0, 1])
     plt.plot(batchStats.batchAccuracies)
     
     plt.show()
@@ -102,7 +100,7 @@ def Predict(model, imageFlow, imageBatch):
     # Acquire the sorted names of the dog species
     labelNames = sorted(imageFlow.class_indices.items(), key = lambda pair: pair[1])
     # Only return the recognized dog species
-    labelNames = np.array(key.title() for key in labelNames)
+    labelNames = np.array([key.title() for key, value in labelNames])
     
     # Show the top 15
     print(labelNames[: 15])
@@ -135,7 +133,7 @@ def PlotDogs(imageBatch, resultBatchProbabilities, labelsBatch):
         # Find the number n picture
         plt.subplot(3, 3, n + 1)
         # Show thre picture
-        plt.imgshow(imageBatch[n])
+        plt.imshow(imageBatch[n])
         # Set the title for the image, the title is Species Name: Probability
         prefix = len("N02085620-")
         # Convert the probability to percentage, and reserve the 2 digits after the decimal point
