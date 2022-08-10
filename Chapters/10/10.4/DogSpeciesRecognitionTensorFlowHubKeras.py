@@ -2,7 +2,7 @@ import tensorflow as tf
 import keras
 import tensorflow_hub as hub
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
+import matplotlib.pyplot as plt
 import os
 
 def DownloadImageNetDogs():
@@ -55,13 +55,13 @@ class CollectionBatchStats(tf.keras.callbacks.Callback):
         
         def __init__(self):
             
-            self.batch_losses = []
-            self.batch_accuracies = []
+            self.batchLosses = []
+            self.batchAccuracies = []
             
             def onBatchEnd(self, batch, logs = None):
                 
-                self.batch_losses.append(logs["loss"])
-                self.batch_accuracies.append(logs["accuracy"])
+                self.batchLosses.append(logs["loss"])
+                self.batchAccuracies.append(logs["accuracy"])
 
 def TrainModel(model, imageFlow, stepsPerEpoch):
     
@@ -70,6 +70,29 @@ def TrainModel(model, imageFlow, stepsPerEpoch):
     batchStats = CollectionBatchStats()
     
     model.fit((item for item in imageFlow), epochs = 5, steps_per_epoch = stepsPerEpoch, callbacks = [batchStats])
+    
+    PlotBatchStatistics(batchStats)
+    
+def PlotBatchStatistics(batchStats):
+    
+    plt.figure()
+    
+    plt.ylabel("Loss")
+    plt.xlabel("Training Steps")
+    
+    # Show the pitch and lowest tide
+    plt.ylim([0, 2])
+    plt.plot(batchStats.batchLosess)
+    
+    plt.figure()
+    
+    plt.ylabel("Accuracy")
+    plt.xlabel("Training Steps")
+    
+    plt.ylim([0, 2])
+    plt.plot(batchStats.batchAccuracies)
+    
+    plt.show()
     
 
 # DownloadImageNetDogs()
