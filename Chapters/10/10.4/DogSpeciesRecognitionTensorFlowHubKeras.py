@@ -208,8 +208,8 @@ def PredictDogSpecies(model, dogSpeciesNames, imagePath):
     top3MaximumValues *= 100
     
     # Concatenate the 3 maximum strings
-    dogTitle = "{}: {:.2f}%\n".format(dogTitles[0], top3MaximumValues[0]) +
-            "{}: {:.2f}%\n".format(dogTitles[1], top3MaximumValues[1]) +
+    dogTitle = "{}: {:.2f}%\n".format(dogTitles[0], top3MaximumValues[0]) + \
+            "{}: {:.2f}%\n".format(dogTitles[1], top3MaximumValues[1]) + \
             "{}: {:.2f}%\n".format(dogTitles[2], top3MaximumValues[2])
     # Add the strings of recognized value on the top right corner
     ax.text(1.01, 0.8, dogTitle, horizontalalignment = "left", verticalalignment = "bottom", transform = ax.transAxes)
