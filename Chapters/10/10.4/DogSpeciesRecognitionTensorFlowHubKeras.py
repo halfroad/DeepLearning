@@ -85,7 +85,7 @@ def PlotBatchStatistics(batchStats):
     
     # Show the pitch and lowest tide
     plt.ylim([0, 2])
-    plt.plot(batchStats.batchLosess)
+    plt.plot(batchStats.batchLosses)
     
     plt.figure()
     
