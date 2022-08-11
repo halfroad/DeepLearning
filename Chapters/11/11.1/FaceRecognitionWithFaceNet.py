@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import image
 import cv2
+import os
 
 def LoadFaces():
     
@@ -142,3 +143,14 @@ facePaths = LoadFaces()
 # CountFacesNumber()
 PreviewRandomImage(facePaths)
 RefineImages(facePaths)
+
+# Switch to directory FaceNet
+os.chdir("FaceNet")
+# Output the current directory
+print(os.getcwd())
+
+# Set the environment variables, the subfolder src under FaceNet
+os.environ["PYTHONPATH"] = "../../../../FaceNet/src"
+
+# Check the environment variables
+print(os.environ["PYTHONPATH"])
