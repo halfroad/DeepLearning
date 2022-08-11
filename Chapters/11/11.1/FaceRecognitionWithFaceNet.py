@@ -56,6 +56,89 @@ def PreviewFace(facePath):
     
     plt.show()
     
+def CountFacesNumber():
+    
+    prefixLength = len("lfw/")
+    
+    # Load all folders under lfw, then remove the lfw/ prefix from foler name
+    # Return an array via list inference to concat the names cut off
+    faceNames = [item[prefixLength: ] for item in sorted(glob("lfw/*"))]
+    
+    print("Number of total faces is {}.".format(len(faceNames)))
+    print(faceNames[: 10])
+    
+def PreviewRandomImage(facePaths):
+    
+    # Create 9 figure objects, 3 rows and 3 columns
+    figure, axes = plt.subplots(nrows = 3, ncols = 3)
+    
+    # Set the size of figure
+    figure.set_size_inches(10, 10)
+    
+    # Select 9 images randomly that means 9 face images (Maybe duplicate and not the same each time)
+    random9Numbers = np.random.choice(len(facePaths), 9)
+    
+    # Select 9 images from dataset
+    random9Images = facePaths[random9Numbers]
+    
+    print(random9Images)
+    
+    # Grab the names according to face which is 9 selected images randomly
+    
+    names = []
+    
+    prefixLength = len("lfw/")
+    
+    for path in random9Images:
+        
+        name = path[prefixLength: ]
+        name = name[: name.find("/")]
+        
+        names.append(name)
+        
+    index = 0
+    
+    # Row
+    for row in range(3):
+        # Column
+        for column in range(3):
+            
+            # Read the values from image
+            _image = image.imread(random9Images[index])
+            # Grab the Axes object according to [row, column]
+            ax = axes[row, column]
+            
+            # Show the image on Axes
+            ax.imshow(_image)
+            
+            # Set the name on the figure
+            ax.set_xlabel(names[index])
+            
+            # Increase the index
+            index += 1
+            
+    plt.show()
+    
+def RefineImages(facePaths):
+    
+    faceShapes = []
+    
+    for path in facePaths:
+        
+        shape = image.imread(path).shape
+        
+        if len(shape) == 3 and shape[0] == 250 and shape[1] == 250 and shape[2] == 3:
+            faceShapes.append(shape)
+        else:
+            print("Observed an abnormal face image, path is: {}.".format(path))
+    
+    faceShapes = np.asarray(faceShapes)
+    
+    print("Total number is {}.".format(len(faceShapes)))
+    print("The shapes of randomy selected 3 images are {}.".format(faceShapes[np.random.choice(len(faceShapes), 3)]))
     
 facePaths = LoadFaces()
-PreviewFace("../Images/4fe610510ua2fff22b15c2818b921ade.JPG")
+# PreviewFace("../Images/4fe610510ua2fff22b15c2818b921ade.JPG")
+# CountFacesNumber()
+PreviewRandomImage(facePaths)
+CompareImages(facePaths)
