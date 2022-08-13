@@ -1,0 +1,7 @@
+arguments: FaceNet/src/align/align_dataset_mtcnn.py ../Inventory/lfw ../Inventory/Aligned --image_size 160 --margin 32 --random_order --gpu_memory_fraction 0.25
+--------------------
+tensorflow version: 2.9.1
+--------------------
+git hash: b'052d0b7b1cb0304420d6225849755f006d8a658d'
+--------------------
+b'diff --git a/Chapters/11/11.1/FaceRecognitionWithFaceNet.py b/Chapters/11/11.1/FaceRecognitionWithFaceNet.py\nindex 499ab58d6..17129ac34 100644\n--- a/Chapters/11/11.1/FaceRecognitionWithFaceNet.py\n+++ b/Chapters/11/11.1/FaceRecognitionWithFaceNet.py\n@@ -59,11 +59,11 @@ def PreviewFace(facePath):\n     \n def CountFacesNumber():\n     \n-    prefixLength = len("lfw/")\n+    prefixLength = len("../Inventory/lfw/")\n     \n     # Load all folders under lfw, then remove the lfw/ prefix from foler name\n     # Return an array via list inference to concat the names cut off\n-    faceNames = [item[prefixLength: ] for item in sorted(glob("lfw/*"))]\n+    faceNames = [item[prefixLength: ] for item in sorted(glob("../Inventory/lfw/*"))]\n     \n     print("Number of total faces is {}.".format(len(faceNames)))\n     print(faceNames[: 10])'

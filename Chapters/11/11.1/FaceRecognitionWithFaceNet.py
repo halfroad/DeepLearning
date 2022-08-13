@@ -59,11 +59,11 @@ def PreviewFace(facePath):
     
 def CountFacesNumber():
     
-    prefixLength = len("lfw/")
+    prefixLength = len("../Inventory/lfw/")
     
     # Load all folders under lfw, then remove the lfw/ prefix from foler name
     # Return an array via list inference to concat the names cut off
-    faceNames = [item[prefixLength: ] for item in sorted(glob("lfw/*"))]
+    faceNames = [item[prefixLength: ] for item in sorted(glob("../Inventory/lfw/*"))]
     
     print("Number of total faces is {}.".format(len(faceNames)))
     print(faceNames[: 10])
