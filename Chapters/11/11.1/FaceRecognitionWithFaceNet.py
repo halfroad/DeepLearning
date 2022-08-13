@@ -151,6 +151,12 @@ def SwitchEnvironmentVariables():
 
     # Check the environment variables
     print(os.environ["PYTHONPATH"])
+    
+    '''
+    
+     python3 FaceNet/src/validate_on_lfw.py ../Inventory/Aligned  /Users/jinhui/Projects/DeepLearning/Chapters/11/Inventory/Models/20180402-114759.pb --distance_metric 1 --use_flipped_images --subtract_mean --use_fixed_image_standardization --lfw_pairs /Users/jinhui/Projects/DeepLearning/Chapters/11/11.1/FaceNet/data/pairs.txt
+     
+    '''
 
 
 facePaths = LoadFaces()

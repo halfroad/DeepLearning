@@ -1,6 +1,7 @@
 # Project Specific
 *.zip
 *.DS_Store
+Models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
