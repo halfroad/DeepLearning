@@ -9,7 +9,7 @@ import os
 def LoadFaces():
     
     # Load all the faces, return the path of each image, and form an array.
-    facePaths = np.array(glob("../Data/lfw/*/*"))
+    facePaths = np.array(glob("../Inventory/lfw/*/*"))
     
     # Disorder the array of facePaths via shuffle()
     random.shuffle(facePaths)
@@ -88,7 +88,7 @@ def PreviewRandomImage(facePaths):
     
     names = []
     
-    prefixLength = len("lfw/")
+    prefixLength = len("../Inventory/lfw/")
     
     for path in random9Images:
         
@@ -137,20 +137,24 @@ def RefineImages(facePaths):
     
     print("Total number is {}.".format(len(faceShapes)))
     print("The shapes of randomy selected 3 images are {}.".format(faceShapes[np.random.choice(len(faceShapes), 3)]))
+
+
+def SwitchEnvironmentVariables():
     
+    # Switch to directory FaceNet
+    os.chdir("../FaceNet")
+    # Output the current directory
+    print(os.getcwd())
+
+    # Set the environment variables, the subfolder src under FaceNet
+    os.environ["PYTHONPATH"] = "../FaceNet/src"
+
+    # Check the environment variables
+    print(os.environ["PYTHONPATH"])
+
+
 facePaths = LoadFaces()
-# PreviewFace("../Images/4fe610510ua2fff22b15c2818b921ade.JPG")
-# CountFacesNumber()
+PreviewFace("../Inventory/Verification/4fe610510ua2fff22b15c2818b921ade.JPG")
+CountFacesNumber()
 PreviewRandomImage(facePaths)
 RefineImages(facePaths)
-
-# Switch to directory FaceNet
-os.chdir("FaceNet")
-# Output the current directory
-print(os.getcwd())
-
-# Set the environment variables, the subfolder src under FaceNet
-os.environ["PYTHONPATH"] = "../../../../FaceNet/src"
-
-# Check the environment variables
-print(os.environ["PYTHONPATH"])
