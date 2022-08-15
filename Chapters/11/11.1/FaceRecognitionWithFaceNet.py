@@ -156,6 +156,14 @@ def SwitchEnvironmentVariables():
     
      python3 FaceNet/src/validate_on_lfw.py ../Inventory/Aligned  /Users/jinhui/Projects/DeepLearning/Chapters/11/Inventory/Models/20180402-114759.pb --distance_metric 1 --use_flipped_images --subtract_mean --use_fixed_image_standardization --lfw_pairs /Users/jinhui/Projects/DeepLearning/Chapters/11/11.1/FaceNet/data/pairs.txt
      
+     python3 FaceNet/src/classifier.py TRAIN ../Inventory/CustomizedDatasets /Users/jinhui/Projects/DeepLearning/Chapters/11/Inventory/Models/20180402-114759.pb ../Inventory/Models/OwnedClassifier.pkl --image_size 160
+     
+     GeneratePairs.py: https://github.com/VictorZhang2014/facenet/blob/master/mydata/generate_pairs.py
+     
+     python3 FaceNet/src/train_softmax.py --logs_base_dir ../Inventory/LabeledFaceWild/Train/FaceNet/ --models_base_dir ../Inventory/LabeledFaceWild/Train/FaceNet/Models/FaceNet/ --data_dir ../Inventory/CustomizedDatasetsAligned/ --image_size 160 --model_def models.inception_resnet_v1 --lfw_dir ../Inventory/CustomizedDatasetsAligned/ --optimizer ADAM --learning_rate -1 --max_nrof_epochs 1 --keep_probability 0.8 --random_crop --random_flip --use_fixed_image_standardization --learning_rate_schedule_file FaceNet/data/learning_rate_schedule_classifier_casia.txt --weight_decay 5e-4 --embedding_size 512 --lfw_distance_metric 1 --lfw_use_flipped_images --lfw_subtract_mean --validation_set_split_ratio 0.05 --validate_every_n_epochs 5 --prelogits_norm_loss_factor 5e-4 --epoch_size 8 --lfw_batch_size 16 --lfw_pairs ../Inventory/Pairs/pairs.txt
+     
+     python3 FaceNet/src/validate_on_lfw.py ../Inventory/CustomizedDatasetsAligned ../Inventory/LabeledFaceWild/Train/FaceNet/Models/FaceNet/20220816-000939 --lfw_pairs ../Inventory/Pairs/pairs.txt --lfw_batch_size 2 --image_size 160 --distance_metric 1 --use_flipped_images --subtract_mean --use_fixed_image_standardization
+     
     '''
 
 

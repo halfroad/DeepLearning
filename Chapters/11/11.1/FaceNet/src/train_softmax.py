@@ -31,7 +31,7 @@ import os.path
 import time
 import sys
 import random
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 import importlib
 import argparse
@@ -39,7 +39,7 @@ import facenet
 import lfw
 import h5py
 import math
-import tensorflow.contrib.slim as slim
+import tf_slim as slim
 from tensorflow.python.ops import data_flow_ops
 from tensorflow.python.framework import ops
 from tensorflow.python.ops import array_ops
@@ -257,7 +257,7 @@ def main(args):
 
                 print('Saving statistics')
                 with h5py.File(stat_file_name, 'w') as f:
-                    for key, value in stat.iteritems():
+                    for key, value in stat.items():
                         f.create_dataset(key, data=value)
     
     return model_dir
@@ -415,6 +415,9 @@ def evaluate(sess, enqueue_op, image_paths_placeholder, labels_placeholder, phas
     sess.run(enqueue_op, {image_paths_placeholder: image_paths_array, labels_placeholder: labels_array, control_placeholder: control_array})
     
     embedding_size = int(embeddings.get_shape()[1])
+    
+    print("nrof_images = {}, batch_size = {}".format(nrof_images, batch_size))
+        
     assert nrof_images % batch_size == 0, 'The number of LFW images must be an integer multiple of the LFW batch size'
     nrof_batches = nrof_images // batch_size
     emb_array = np.zeros((nrof_images, embedding_size))
@@ -573,6 +576,7 @@ def parse_arguments(argv):
         help='Concatenates embeddings for the image and its horizontally flipped counterpart.', action='store_true')
     parser.add_argument('--lfw_subtract_mean', 
         help='Subtract feature mean before calculating distance.', action='store_true')
+            
     return parser.parse_args(argv)
   
 

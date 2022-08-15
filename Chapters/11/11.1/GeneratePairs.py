@@ -1,68 +1,79 @@
-import sys
+#! encoding: utf-8
+
 import os
 import random
-import time
-import itertools
-import pdb
-import argparse
+
+class GeneratePairs:
+    """
+    Generate the pairs.txt file that is used for training face classifier when calling python `src/train_softmax.py`.
+    Or others' python scripts that needs the file of pairs.txt.
+
+    Doc Reference: http://vis-www.cs.umass.edu/lfw/README.txt
+    """
+
+    def __init__(self, data_dir, pairs_filepath, img_ext):
+        """
+        Parameter data_dir, is your data directory.
+        Parameter pairs_filepath, where is the pairs.txt that belongs to.
+        Parameter img_ext, is the image data extension for all of your image data.
+        """
+        self.data_dir = data_dir
+        self.pairs_filepath = pairs_filepath
+        self.img_ext = img_ext
 
 
+    def generate(self):
+        self._generate_matches_pairs()
+        self._generate_mismatches_pairs()
 
 
-parser = argparse.ArgumentParser(description='generate image pairs')
+    def _generate_matches_pairs(self):
+        """
+        Generate all matches pairs
+        """
+        for name in os.listdir(self.data_dir):
+            if name == ".DS_Store":
+                continue
 
-parser.add_argument('--data-dir', default='', help='')
-parser.add_argument('--outputtxt', default='', help='path to save.')
-parser.add_argument('--num-samepairs',default=100)
-args = parser.parse_args()
-cnt = 0
-same_list = []
-diff_list = []
-list1 = []
-list2 = []
-folders_1 = os.listdir(args.data_dir)
-dst = open(args.outputtxt, 'a')
-count = 0
-dst.writelines('\n')
+            a = []
+            for file in os.listdir(self.data_dir + name):
+                if file == ".DS_Store":
+                    continue
+                a.append(file)
 
-for folder in folders_1:
-    sublist = []
-    same_list = []
-    imgs = os.listdir(os.path.join(args.data_dir, folder))
-    for img in imgs:
-        img_root_path = os.path.join(args.data_dir, folder, img)
-        sublist.append(img_root_path)
-        list1.append(img_root_path)
-    for item in itertools.combinations(sublist, 2):
-        for name in item:
-            same_list.append(name)
-    if len(same_list) > 10 and len(same_list) < 13:
-        for j in range(0, len(same_list), 2):
-                if count < int(args.num_samepairs):
-                    dst.writelines(same_list[j] + ' ' + same_list[j+1]+ ' ' + '1' + '\n')
-                    count += 1
-    if count >= int(args.num_samepairs):
-        break
-list2 = list1.copy()
+            with open(self.pairs_filepath, "a") as f:
+                for i in range(3):
+                    temp = random.choice(a).split("_") # This line may vary depending on how your images are named.
+                    w = temp[0] + "_" + temp[1]
+                    l = random.choice(a).split("_")[2].lstrip("0").rstrip(self.img_ext)
+                    r = random.choice(a).split("_")[2].lstrip("0").rstrip(self.img_ext)
+                    f.write(w + "\t" + l + "\t" + r + "\n")
 
 
+    def _generate_mismatches_pairs(self):
+        """
+        Generate all mismatches pairs
+        """
+        for i, name in enumerate(os.listdir(self.data_dir)):
+            if name == ".DS_Store":
+                continue
 
-diff = 0
-print(count)
+            remaining = os.listdir(self.data_dir)
+            remaining = [f_n for f_n in remaining if f_n != ".DS_Store"]
+            # del remaining[i] # deletes the file from the list, so that it is not chosen again
+            other_dir = random.choice(remaining)
+            with open(self.pairs_filepath, "a") as f:
+                for i in range(3):
+                    file1 = random.choice(os.listdir(self.data_dir + name))
+                    file2 = random.choice(os.listdir(self.data_dir + other_dir))
+                    f.write(name + "\t" + file1.split("_")[2].lstrip("0").rstrip(self.img_ext) + "\t")
+                f.write("\n")
 
 
-while True:
-    random.seed(time.time() * 100000 % 10000)
-    random.shuffle(list2)
-    for p in range(0, len(list2) - 1, 2):
-        if list2[p] != list2[p + 1]:
-            dst.writelines(list2[p] + ' ' + list2[p + 1] + ' ' + '0'+ '\n')
-            diff += 1
-            if diff >= count:
-                break
-            
-    if diff < count:
-        
-        continue
-    else:
-        break
+if __name__ == '__main__':
+    data_dir = "../Inventory/CustomizedDatasets/"
+    pairs_filepath = "../Inventory/Pairs/pairs.txt"
+    img_ext = ".jpg"
+    generatePairs = GeneratePairs(data_dir, pairs_filepath, img_ext)
+    generatePairs.generate()
+

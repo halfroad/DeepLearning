@@ -32,6 +32,7 @@ from subprocess import Popen, PIPE
 import tensorflow.compat.v1 as tf
 import numpy as np
 from scipy import misc
+from matplotlib.pyplot import imread
 from sklearn.model_selection import KFold
 from scipy import interpolate
 from tensorflow.python.training import training
@@ -244,7 +245,7 @@ def load_data(image_paths, do_random_crop, do_random_flip, image_size, do_prewhi
     nrof_samples = len(image_paths)
     images = np.zeros((nrof_samples, image_size, image_size, 3))
     for i in range(nrof_samples):
-        img = misc.imread(image_paths[i])
+        img = imread(image_paths[i])
         if img.ndim == 2:
             img = to_rgb(img)
         if do_prewhiten:
@@ -505,14 +506,25 @@ def calculate_val(thresholds, embeddings1, embeddings2, actual_issame, far_targe
     return val_mean, val_std, far_mean
 
 
+#def calculate_val_far(threshold, dist, actual_issame):
+#    predict_issame = np.less(dist, threshold)
+#    true_accept = np.sum(np.logical_and(predict_issame, actual_issame))
+#    false_accept = np.sum(np.logical_and(predict_issame, np.logical_not(actual_issame)))
+#    n_same = np.sum(actual_issame)
+#    n_diff = np.sum(np.logical_not(actual_issame))
+#    val = float(true_accept) / float(n_same)
+#    far = float(false_accept) / float(n_diff)
+#    return val, far
+
 def calculate_val_far(threshold, dist, actual_issame):
     predict_issame = np.less(dist, threshold)
     true_accept = np.sum(np.logical_and(predict_issame, actual_issame))
     false_accept = np.sum(np.logical_and(predict_issame, np.logical_not(actual_issame)))
     n_same = np.sum(actual_issame)
     n_diff = np.sum(np.logical_not(actual_issame))
-    val = float(true_accept) / float(n_same)
-    far = float(false_accept) / float(n_diff)
+    val = float(true_accept) / float(n_same) if float(n_same) > 0 else 1.0
+    far = float(false_accept) / float(n_diff) if float(n_diff) > 0 else 0.0
+    
     return val, far
 
 def store_revision_info(src_path, output_dir, arg_string):

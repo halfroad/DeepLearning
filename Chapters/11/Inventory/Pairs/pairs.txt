@@ -1,0 +1,15 @@
+Yao_Ming		3	5
+Yao_Ming		1	8
+Yao_Ming		5	3
+Vicki_ZhaoWei	2	1
+Vicki_ZhaoWei	1	2
+Vicki_ZhaoWei	2	1
+Vin_Diesel	1	2
+Vin_Diesel	1	2
+Vin_Diesel	1	2
+Bill_Gates	3	4
+Bill_Gates	1	16
+Bill_Gates	16	7
+Zhang_Qiang	1	1
+Zhang_Qiang	3	2
+Zhang_Qiang	3	2
