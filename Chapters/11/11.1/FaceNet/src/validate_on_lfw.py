@@ -132,6 +132,7 @@ def evaluate(sess, enqueue_op, image_paths_placeholder, labels_placeholder, phas
     
     auc = metrics.auc(fpr, tpr)
     print('Area Under Curve (AUC): %1.3f' % auc)
+    print("fpr = {}, tpr = {}".format(fpr, tpr))
     eer = brentq(lambda x: 1. - x - interpolate.interp1d(fpr, tpr)(x), 0., 1.)
     print('Equal Error Rate (EER): %1.3f' % eer)
     
