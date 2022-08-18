@@ -175,8 +175,10 @@ def TrainModel(model, imagesTrain, emotionsTrain, imagesValidation, emotionsVali
     # Compile the model, use the Categorical Cross Entrophy as loss function, Adam as optimizer, and use accuracy to measure the result
     model.compile(loss = "categorical_crossentropy", optimizer = keras.optimizers.Adam(), metrics = ["accuracy"])
     
+    steps_per_epoch = int(len(imagesTrain) / batch_size)
+    
     # Train the model
-    history = model.fit(trainGenerator, steps_per_epoch = batch_size, epochs = epochs, validation_data = (imagesValidation, emotionsValidation), verbose = 1)
+    history = model.fit(trainGenerator, steps_per_epoch = steps_per_epoch, epochs = epochs, validation_data = (imagesValidation, emotionsValidation), verbose = 1)
     
     return history
 
