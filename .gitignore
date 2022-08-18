@@ -1,6 +1,7 @@
 # Project Specific
 *.zip
 *.DS_Store
+*.csv
 Models/
 Backup/
 Verification/
