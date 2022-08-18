@@ -195,8 +195,8 @@ def EvaluateModel(model, imagesTrain, emotionsTrain, imagesTest, emotionsTest):
 def PlotHistory(history):
     
     # Draw the trends of loss and accuracy when training and verifying
-    plt.plot(history.history["acc"])
-    plt.plot(history.history["val_acc"])
+    plt.plot(history.history["accuracy"])
+    plt.plot(history.history["val_accuracy"])
     
     plt.title("Model Accuracy")
     
@@ -209,7 +209,7 @@ def PlotHistory(history):
     
     # Draw the trends of loss and accuracy when training and verifying
     plt.plot(history.history["loss"])
-    plt.plot(history.hostory["val_loss"])
+    plt.plot(history.history["val_loss"])
     
     plt.title("Model Accuracy")
     
