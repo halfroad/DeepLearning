@@ -3,8 +3,11 @@ import numpy as np
 import keras
 from keras import utils
 from keras.models import Sequential
+from keras.models import model_from_json
+from keras.models import load_model
 from keras.layers import Conv2D, MaxPooling2D, AveragePooling2D
 from keras.layers import Dense, activation, Dropout, Flatten
+from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 
 import matplotlib.pyplot as plt
@@ -194,6 +197,59 @@ def EvaluateModel(model, imagesTrain, emotionsTrain, imagesTest, emotionsTest):
     print("Test Loss = {}".format(testScore[0]))
     print("Test Accuracy = {}".format(testScore[1]))
     
+def StoreModel(model):
+    
+    # Serialize the architecture of model, and store the model into JSON object
+    modelJson = model.to_json()
+    
+    # Store the model into local disk
+    with open("FacialExpressionRecognitionModelArchitecture.json", "w") as jsonFile:
+        
+        jsonFile.write(modelJson)
+        
+    # Serialize the weights into a HDF5 (Hierarchical Data  Format) file
+    model.save_weights("FacialExpressionRecognitionModelWeights.h5")
+    
+def LoadModel():
+    
+    # Load the architecture of model
+    with open("FacialExpressionRecognitionModelArchitecture.json", "r") as jsonFile:
+        
+        json = jsonFile.read()
+        model = model_from_json(json)
+        
+        model.load_weights("FacialExpressionRecognitionModelWeights.h5")
+        
+        return model
+    
+def LoadImage(path):
+    
+    # Load the RGB image with gray scale, adn resize the image into 48 * 48
+    _image = utils.load_img(path, grayscale = True, target_size = (width, height))
+    
+    # Convert the image into array
+    array = utils.img_to_array(_image)
+    
+    # Reshape the array to 4 dimensions
+    array = np.expand_dims(array, axis = 0)
+    
+    # Normalize the image
+    array /= 255
+    
+    return array
+
+def PlotAnalyzeEmotion(probabilities, classifications):
+    
+    # Draw the bar to show the probabilities for classifications
+    vertical = np.arange(len(classifications))
+    
+    plt.bar(vertical, probabilities, align = "center", alpha = 0.5)
+    plt.xticks(vertical, classifications)
+    plt.ylabel("Percentage")
+    plt.title("Emotion Recognized")
+    
+    plt.show()
+    
 def PlotHistory(history):
     
     # Draw the trends of loss and accuracy when training and verifying
@@ -222,7 +278,15 @@ def PlotHistory(history):
     
     plt.show()
     
-            
+def DisplayImage(path, grayScale = False):
+    
+    # Read the image from local disk to memory
+    _image = utils.load_img(path, grayscale = grayScale, target_size = (width, height, 3))
+    
+    # show the image
+    plt.imshow(_image)
+    plt.show()
+    
 instancesNumber, lines = LoadFromDisk()
 imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest, classificationsNumber = Split(instancesNumber, lines)
 imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest = Preprocess(imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest)
@@ -230,5 +294,10 @@ imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, em
 model = CreateModel(classificationsNumber)
 history = TrainModel(model, imagesTrain, emotionsTrain, imagesValidation, emotionsValidation)
 EvaluateModel(model, imagesTrain, emotionsTrain, imagesTest, emotionsTest)
+StoreModel(model)
+model = LoadModel()
 
 PlotHistory(history)
+
+DisplayImage("../Inventory/Verification/victor_test.jpeg")
+DisplayImage("../Inventory/Verification/victor_test.jpeg", grayScale = True)
