@@ -320,6 +320,7 @@ def DisplayImage(path, grayScale = False, resize = False):
         
     plt.show()
 
+'''
 instancesNumber, lines = LoadFromDisk()
 imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest, classificationsNumber = Split(instancesNumber, lines)
 imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest = Preprocess(imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest)
@@ -344,3 +345,4 @@ for file in files:
     
     DisplayImage(file)
     Predict(model, file)
+'''

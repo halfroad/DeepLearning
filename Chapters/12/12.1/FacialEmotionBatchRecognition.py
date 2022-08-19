@@ -7,9 +7,6 @@ import cv2
 import numpy as np
 import random
 
-import sys
-sys.path.append("../12.1/")
-
 from FacialEmotionRecognition import LoadImage, LoadModel
 
 # 7 classifications of facial emotions
@@ -82,6 +79,8 @@ def PlotFacialEmotions(model, paths):
             index += 1
             
     plt.show()
+    
+
     
 paths = glob("../Inventory/Emotions/*.jpg")
 
