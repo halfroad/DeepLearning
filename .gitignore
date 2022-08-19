@@ -2,9 +2,9 @@
 *.zip
 *.DS_Store
 *.csv
-Models/
+
 Backup/
-Verification/
+Inventory/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

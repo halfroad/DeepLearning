@@ -13,7 +13,7 @@ sys.path.append("../12.1/")
 from FacialEmotionRecognition import LoadImage, LoadModel
 
 # 7 classifications of facial emotions
-classifications = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"]
+classifications = ["愤怒", "厌恶", "害怕", "高兴", "悲伤", "惊喜", "平淡"]
 
 def PlotFacialEmotions(model, paths):
     
@@ -23,6 +23,7 @@ def PlotFacialEmotions(model, paths):
     
     # Load the font Songti
     fontPath = "../../../Universal/Fonts/Songti.ttc"
+    # fontPath = "Songti.ttc"
     font = ImageFont.truetype(fontPath, 120)
     
     rows = 2
