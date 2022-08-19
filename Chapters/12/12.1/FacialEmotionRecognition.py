@@ -187,6 +187,34 @@ def TrainModel(model, imagesTrain, emotionsTrain, imagesValidation, emotionsVali
     
     return history
 
+def PlotHistory(history):
+    
+    # Draw the trends of loss and accuracy when training and verifying
+    plt.plot(history.history["accuracy"])
+    plt.plot(history.history["val_accuracy"])
+    
+    plt.title("Model Accuracy")
+    
+    plt.ylabel("Accuracy")
+    plt.xlabel("Epochs")
+    
+    plt.legend(["Train", "Test"], loc = "upper left")
+    
+    plt.show()
+    
+    # Draw the trends of loss and accuracy when training and verifying
+    plt.plot(history.history["loss"])
+    plt.plot(history.history["val_loss"])
+    
+    plt.title("Model Accuracy")
+    
+    plt.ylabel("Accuracy")
+    plt.xlabel("Epochs")
+    
+    plt.legend(["Train", "Test"], loc = "upper left")
+    
+    plt.show()
+
 def EvaluateModel(model, imagesTrain, emotionsTrain, imagesTest, emotionsTest):
     
     trainScore = model.evaluate(imagesTrain, emotionsTrain, verbose = 0)
@@ -205,22 +233,22 @@ def StoreModel(model):
     modelJson = model.to_json()
     
     # Store the model into local disk
-    with open("FacialExpressionRecognitionModelArchitecture.json", "w") as jsonFile:
+    with open("../Inventory/Models/FacialExpressionRecognitionModelArchitecture.json", "w") as jsonFile:
         
         jsonFile.write(modelJson)
         
     # Serialize the weights into a HDF5 (Hierarchical Data  Format) file
-    model.save_weights("FacialExpressionRecognitionModelWeights.h5")
+    model.save_weights("../Inventory/Models/FacialExpressionRecognitionModelWeights.h5")
     
 def LoadModel():
     
     # Load the architecture of model
-    with open("FacialExpressionRecognitionModelArchitecture.json", "r") as jsonFile:
+    with open("../Inventory/Models/FacialExpressionRecognitionModelArchitecture.json", "r") as jsonFile:
         
         json = jsonFile.read()
         model = model_from_json(json)
         
-        model.load_weights("FacialExpressionRecognitionModelWeights.h5")
+        model.load_weights("../Inventory/Models/FacialExpressionRecognitionModelWeights.h5")
         
         # Compile the model, use the Categorical Cross Entrophy as loss function, Adam as optimizer, and use accuracy to measure the result
         model.compile(loss = "categorical_crossentropy", optimizer = keras.optimizers.Adam(), metrics = ["accuracy"])
@@ -264,44 +292,26 @@ def Predict(model, path):
     # Define the classifications
     PlotAnalyzeEmotion(probabilites[0], classifications)
     
-def PlotHistory(history):
     
-    # Draw the trends of loss and accuracy when training and verifying
-    plt.plot(history.history["accuracy"])
-    plt.plot(history.history["val_accuracy"])
-    
-    plt.title("Model Accuracy")
-    
-    plt.ylabel("Accuracy")
-    plt.xlabel("Epochs")
-    
-    plt.legend(["Train", "Test"], loc = "upper left")
-    
-    plt.show()
-    
-    # Draw the trends of loss and accuracy when training and verifying
-    plt.plot(history.history["loss"])
-    plt.plot(history.history["val_loss"])
-    
-    plt.title("Model Accuracy")
-    
-    plt.ylabel("Accuracy")
-    plt.xlabel("Epochs")
-    
-    plt.legend(["Train", "Test"], loc = "upper left")
-    
-    plt.show()
-    
-def DisplayImage(path, grayScale = False):
+def DisplayImage(path, grayScale = False, resize = False):
     
      # Read the image from local disk to memory
     if grayScale:
-   
-        _image = utils.load_img(path)
-
-        # show the image
-        plt.imshow(_image)
         
+        if resize:
+   
+            _image = utils.load_img(path, color_mode = "grayscale", target_size = (width, height))
+
+            # show the image
+            plt.imshow(_image)
+            
+        else:
+            
+             _image = utils.load_img(path, color_mode = "grayscale")
+             
+             # show the image
+             plt.imshow(_image)
+            
     else:
         _image = utils.load_img(path)
 
@@ -327,8 +337,6 @@ PlotHistory(history)
 DisplayImage("../Inventory/Verification/victor_test.jpeg")
 DisplayImage("../Inventory/Verification/victor_test.jpeg", grayScale = True)
 
-'''
-
 model = LoadModel()
 
 files = glob.glob("../Inventory/Emotions/*")
@@ -337,3 +345,5 @@ for file in files:
     
     DisplayImage(file)
     Predict(model, file)
+    
+'''
