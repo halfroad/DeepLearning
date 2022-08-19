@@ -10,7 +10,7 @@ import random
 from FacialEmotionRecognition import LoadImage, LoadModel
 
 # 7 classifications of facial emotions
-classifications = ["愤怒", "厌恶", "害怕", "高兴", "悲伤", "惊喜", "平淡"]
+classifications = ["愤怒", "厌恶", "害怕", "高兴", "悲伤", "惊喜", "一般"]
 
 def PlotFacialEmotions(model, paths):
     
@@ -21,10 +21,10 @@ def PlotFacialEmotions(model, paths):
     # Load the font Songti
     fontPath = "../../../Universal/Fonts/Songti.ttc"
     # fontPath = "Songti.ttc"
-    font = ImageFont.truetype(fontPath, 120)
+    font = ImageFont.truetype(fontPath, 32)
     
     rows = 2
-    columns = 4
+    columns = 3
     
     # Create a figure with 2 rows, 4 columns
     figure, axes = plt.subplots(nrows = rows, ncols = columns)

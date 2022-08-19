@@ -7,12 +7,13 @@ import sys
 
 sys.path.append("../12.1/")
 
-from FacialEmotionRecognition import LoadModel, classifications, width, height
+from FacialEmotionRecognition import LoadModel, width, height
 model = LoadModel()
 
 # Load the configuration file of cv2
 haarcascade = "haarcascade_frontalface_default.xml"
 cascadeClassifier = cv2.CascadeClassifier(haarcascade)
+classifications = ["愤怒", "厌恶", "害怕", "高兴", "悲伤", "惊喜", "一般"]
 
 def PredictEmotion(frame, horizonzal, vertical, width, height, classifications, model):
     
@@ -41,7 +42,8 @@ def PredictEmotion(frame, horizonzal, vertical, width, height, classifications, 
 def RedrawImage(frame,  emotion, horizontal, vertical):
     
     # Load the font
-    path = "../../../Universal/Fonts/Songti.ttc"
+    # path = "../../../Universal/Fonts/Songti.ttc"
+    path = "Songti.ttc"
     font = ImageFont.truetype(path, 32)
     
     # Sythesize the orginal frame and emtion to new image
@@ -66,6 +68,8 @@ def ProcessFrame(frame):
     
     if counter % 1 == 0:
     
+        finalImage = frame
+        
         # Gray out the image
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
@@ -83,27 +87,41 @@ def ProcessFrame(frame):
             
             # Sythesize the frame
             finalImage = RedrawImage(frame, emotion, x, y)
-    
+            
     counter += 1
     
     # Return the new csythesized image
-    return finalImage 
-
-def EditClip(originalVideo, destinationVideo, beginTime = 0, endTime = 10):
-    
-    # Specify the path of video, and specify the begin time and end time for the edit clip via method suclip(t_start, t_end)
-    videoFileClip = VideoFileClip(originalVideo).subclip(beginTime, endTime)
+    return finalImage
         
-    # Edit each frame via the method ProcessFrame, and update the video after the frame is edited
-    whiteClip = videoFileClip.fl_image(ProcessFrame)
+def EditClip(originalVideo, destinationVideo, clip = False, beginTime = 0, endTime = 10):
     
-    # Export the edited video into the destination path, and show the percertage of completion
-    whiteClip.write_videofile(destinationVideo)
+    if clip:
+    
+        # Specify the path of video, and specify the begin time and end time for the edit clip via method suclip(t_start, t_end)
+        videoFileClip = VideoFileClip(originalVideo).subclip(beginTime, endTime)
+            
+        # Edit each frame via the method ProcessFrame, and update the video after the frame is edited
+        whiteClip = videoFileClip.fl_image(ProcessFrame)
+        
+        # Export the edited video into the destination path, and show the percertage of completion
+        whiteClip.write_videofile(destinationVideo, audio_codec = "aac")
+        
+    else:
+    
+        # Specify the path of video, and specify the begin time and end time for the edit clip via method suclip(t_start, t_end)
+        videoFileClip = VideoFileClip(originalVideo)
+            
+        # Edit each frame via the method ProcessFrame, and update the video after the frame is edited
+        whiteClip = videoFileClip.fl_image(ProcessFrame)
+        
+        # Export the edited video into the destination path, and show the percertage of completion
+        # whiteClip.write_videofile(destinationVideo, audio = True)
+        
+        whiteClip.write_videofile(destinationVideo, audio_codec = "aac")
 
 counter = 0
 
-originalVideo = "../Inventory/Videos/video.mp4"
-destinationVideo = "../Inventory/Videos/video_edited.mp4"
+originalVideo = "../Inventory/Videos/video3.mp4"
+destinationVideo = "../Inventory/Videos/video3_edited3.mp4"
 
 EditClip(originalVideo, destinationVideo)
-    
