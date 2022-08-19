@@ -12,10 +12,15 @@ from keras.preprocessing.image import ImageDataGenerator
 
 import matplotlib.pyplot as plt
 
+import glob
+
 
 # Define the width and height for image
 width = 48
 height = 48
+
+# 7 classifications of facial emotions
+classifications = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"]
     
     
 def LoadFromDisk():
@@ -36,9 +41,6 @@ def LoadFromDisk():
     
 
 def Split(instancesNumber, lines):
-    
-    # 7 classifications of facial emotions
-    classifications = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"]
     
     classificationsNumber = len(classifications)
     
@@ -220,12 +222,15 @@ def LoadModel():
         
         model.load_weights("FacialExpressionRecognitionModelWeights.h5")
         
+        # Compile the model, use the Categorical Cross Entrophy as loss function, Adam as optimizer, and use accuracy to measure the result
+        model.compile(loss = "categorical_crossentropy", optimizer = keras.optimizers.Adam(), metrics = ["accuracy"])
+        
         return model
     
 def LoadImage(path):
     
     # Load the RGB image with gray scale, adn resize the image into 48 * 48
-    _image = utils.load_img(path, grayscale = True, target_size = (width, height))
+    _image = utils.load_img(path, color_mode = "grayscale", target_size = (width, height))
     
     # Convert the image into array
     array = utils.img_to_array(_image)
@@ -249,6 +254,15 @@ def PlotAnalyzeEmotion(probabilities, classifications):
     plt.title("Emotion Recognized")
     
     plt.show()
+    
+def Predict(model, path):
+    
+    # Load the image
+    _image = LoadImage(path)
+    # Recognition propabilities
+    probabilites = model.predict(_image)
+    # Define the classifications
+    PlotAnalyzeEmotion(probabilites[0], classifications)
     
 def PlotHistory(history):
     
@@ -280,13 +294,23 @@ def PlotHistory(history):
     
 def DisplayImage(path, grayScale = False):
     
-    # Read the image from local disk to memory
-    _image = utils.load_img(path, grayscale = grayScale, target_size = (width, height, 3))
-    
-    # show the image
-    plt.imshow(_image)
+     # Read the image from local disk to memory
+    if grayScale:
+   
+        _image = utils.load_img(path)
+
+        # show the image
+        plt.imshow(_image)
+        
+    else:
+        _image = utils.load_img(path)
+
+        # show the image
+        plt.imshow(_image)
+        
     plt.show()
-    
+
+'''
 instancesNumber, lines = LoadFromDisk()
 imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest, classificationsNumber = Split(instancesNumber, lines)
 imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest = Preprocess(imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, emotionsTest)
@@ -294,10 +318,22 @@ imagesTrain, emotionsTrain, imagesValidation, emotionsValidation, imagesTest, em
 model = CreateModel(classificationsNumber)
 history = TrainModel(model, imagesTrain, emotionsTrain, imagesValidation, emotionsValidation)
 EvaluateModel(model, imagesTrain, emotionsTrain, imagesTest, emotionsTest)
+
 StoreModel(model)
-model = LoadModel()
 
 PlotHistory(history)
 
+
 DisplayImage("../Inventory/Verification/victor_test.jpeg")
 DisplayImage("../Inventory/Verification/victor_test.jpeg", grayScale = True)
+
+'''
+
+model = LoadModel()
+
+files = glob.glob("../Inventory/Emotions/*")
+
+for file in files:
+    
+    DisplayImage(file)
+    Predict(model, file)
