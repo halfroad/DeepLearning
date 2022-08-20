@@ -118,10 +118,58 @@ def EditClip(originalVideo, destinationVideo, clip = False, beginTime = 0, endTi
         # whiteClip.write_videofile(destinationVideo, audio = True)
         
         whiteClip.write_videofile(destinationVideo, audio_codec = "aac")
+        
+def LiveRecognize():
+    
+    camera = cv2.VideoCapture(0)
+    
+    if not camera.isOpened():
+        
+        print("Cannot open the camera")
+        exit()
+        
+    processFrame = True
+    
+    # Create a while loop to consecutively read the image object from webcam
+    while True:
+        
+        # Obtain the frames one by one fro video streaming
+        ret, frame = camera.read()
+        
+        # Convert the frame (image) into gray scale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        
+        # Recognize the faces from frame
+        faces = cascadeClassifier.detectMultiScale(gray, scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30))
+        
+        # Iterate the array of faces
+        for (x, y, w, h) in faces:
+            
+            # Draw the facial rectangle
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (288, 32, 183), 2)
+            # Recognize the emotion of the face
+            emotion = PredictEmotion(frame, x, y, w, h, classifications, model)
+            # Sythesize the frame and emotion string on a new image
+            _image = RedrawImage(frame, emotion, x, y)
+            # Show the sythesized image on the window, and resize the image into 800 * 500
+            cv2.imshow("Facial Emotion Recognition", cv2.resize(800, 500))
+            
+        # Exit the application when key "q" pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+        
+    camera.release()
+    cv2.destroyAllWindows()
 
 counter = 0
+
+'''
 
 originalVideo = "../Inventory/Videos/video3.mp4"
 destinationVideo = "../Inventory/Videos/video3_edited3.mp4"
 
 EditClip(originalVideo, destinationVideo)
+
+'''
+
+LiveRecognize()

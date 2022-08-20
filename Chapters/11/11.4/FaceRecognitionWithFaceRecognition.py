@@ -78,7 +78,7 @@ def LiveRecognize(paths):
     
     processFrame = True
     
-    # Create a while loop to consecutively read tge image object from webcam
+    # Create a while loop to consecutively read the image object from webcam
     while True:
         
         ret, frame = camera.read()
