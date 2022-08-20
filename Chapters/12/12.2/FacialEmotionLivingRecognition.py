@@ -154,7 +154,7 @@ def LiveRecognize():
                 # Sythesize the frame and emotion string on a new image
                 _image = RedrawImage(frame, emotion, x, y)
                 # Show the sythesized image on the window, and resize the image into 800 * 500
-                cv2.imshow("Facial Emotion Recognition", cv2.resize(800, 500))
+                cv2.imshow("Facial Emotion Recognition", cv2.resize(_image, (800, 500)))
          
         processFrame = not processFrame
          
