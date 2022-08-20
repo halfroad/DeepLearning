@@ -136,25 +136,27 @@ def LiveRecognize():
         # Obtain the frames one by one fro video streaming
         ret, frame = camera.read()
         
-        if processFrame & ret & frame is not None:
+        if ret and frame is not None:
         
-            # Convert the frame (image) into gray scale
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            
-            # Recognize the faces from frame
-            faces = cascadeClassifier.detectMultiScale(gray, scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30))
-            
-            # Iterate the array of faces
-            for (x, y, w, h) in faces:
+            if processFrame:
+        
+                # Convert the frame (image) into gray scale
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 
-                # Draw the facial rectangle
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (288, 32, 183), 2)
-                # Recognize the emotion of the face
-                emotion = PredictEmotion(frame, x, y, w, h, classifications, model)
-                # Sythesize the frame and emotion string on a new image
-                _image = RedrawImage(frame, emotion, x, y)
-                # Show the sythesized image on the window, and resize the image into 800 * 500
-                cv2.imshow("Facial Emotion Recognition", cv2.resize(_image, (800, 500)))
+                # Recognize the faces from frame
+                faces = cascadeClassifier.detectMultiScale(gray, scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30))
+                
+                # Iterate the array of faces
+                for (x, y, w, h) in faces:
+                    
+                    # Draw the facial rectangle
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 230), 2)
+                    # Recognize the emotion of the face
+                    emotion = PredictEmotion(frame, x, y, w, h, classifications, model)
+                    # Sythesize the frame and emotion string on a new image
+                    _image = RedrawImage(frame, emotion, x, y)
+                    # Show the sythesized image on the window, and resize the image into 800 * 500
+                    cv2.imshow("Facial Emotion Recognition", cv2.resize(_image, (800, 500)))
          
         processFrame = not processFrame
          

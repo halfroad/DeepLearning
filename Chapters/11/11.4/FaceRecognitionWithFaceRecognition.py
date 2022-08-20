@@ -83,7 +83,7 @@ def LiveRecognize(paths):
         
         ret, frame = camera.read()
         
-        if ret & frame is not None:
+        if ret and frame is not None:
                     
             # Shrink the frame size of the captured image to 1/4 of original for the purpose of quicker face recognition
             smallFrame = cv2.resize(frame, (0, 0), fx = 0.25, fy = 0.25)
@@ -156,4 +156,4 @@ def LiveRecognize(paths):
     cv2.destroyAllWindows()
         
 # DrawFacialFeatures("../Inventory/Verification/jinhui_test.jpeg")
-LiveRecognize(["../Inventory/Verification/Personnel_1_test.jpeg", "../Inventory/Verification/Personnel_2_test.jpg"])
+LiveRecognize(["../Inventory/Verification/Personnel_2_test.jpg", "../Inventory/Verification/Personnel_1_test.jpg"])
