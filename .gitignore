@@ -2,6 +2,7 @@
 *.zip
 *.DS_Store
 *.csv
+*.pd
 
 Backup/
 Inventory/
