@@ -2,6 +2,14 @@
 # https://github.com/gsethi2409/tf-pose-estimation
 # https://medium.com/@gsethi2409/pose-estimation-with-tensorflow-2-0-a51162c095ba
 
+'''
+
+tf-pose-estimation/tf_pose/estimator.py
+
+import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
+'''
+
 import time
 import numpy as np
 import matplotlib.pyplot as plt
