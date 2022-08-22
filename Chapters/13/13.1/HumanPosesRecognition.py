@@ -52,17 +52,105 @@ def InferImages(paths):
         keyParts = estimator.inference(image, resize_to_default = (width > 0 and height > 0), upsample_size = resizeOutputRatio)
         image = TfPoseEstimator.draw_humans(image, keyParts, imgcopy = False)
         
+        '''
+
         # Initialize a window of size 7 * 12
         figure, ax = plt.subplots(figsize = (7, 12))
         
         # Show the image
         ax.imshow(image)
+        '''
+        
+        PlotMaps(image, estimator)
     
     # Disable the grid
     plt.grid(False)
     
     plt.show()
     
-
+def PlotMaps(image, estimator):
+    
+    # Plot the paf map and heat map
+    
+    # 1st image
+    figure = plt.figure()
+    
+    subplot = figure.add_subplot(2, 2, 1)
+    
+    # Set the title
+    subplot.set_title("Result")
+    
+    # image is read by InferImages()
+    # Convert the BGR t RGB to show the image
+    
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    plt.imshow(image)
+    
+    # Hide the grid
+    plt.grid(False)
+    
+    # Show the colorful bar on the right
+    plt.colorbar()
+    
+    # 2nd image
+    backgroundImage = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_BGR2RGB)
+    
+    # Reset the size of converted image, interplolation is to resampe
+    backgroundImage = cv2.resize(backgroundImage, (estimator.heatMat.shape[1], estimator.heatMat.shape[0]), interpolation = cv2.INTER_AREA)
+    
+    subplot = figure.add_subplot(2, 2, 2)
+    
+    # Show the translucent image which controlled by alpha, the parameter is ranged between 0 and 1. 1 stands for opaque, and 0 transparent totally
+    plt.imshow(backgroundImage, alpha = 0.5)
+    
+    # Invert the heatmat array alongside axis 2, obtain the maximum, that is the detected protruding points
+    heatmath = np.amax(estimator.heatMat[:, :, : -1], axis = 2)
+    
+    # Show the image with gray and translucent style
+    plt.imshow(heatmath, cmap = plt.cm.gray, alpha = 0.5)
+    
+    # Set the title for subplot
+    subplot.set_title("Dot Network")
+    
+    plt.grid(False)
+    
+    plt.colorbar()
+    
+    # 3rd image
+    # Transpose the pafMath array
+    pafmath = estimator.pafMath.transpose((2, 0, 1))
+    
+    # Obtain the odd maximum from array alongside the axis 0
+    oddMaximum = np.amax(np.absolute(pafmath[::2, :, :]), axis = 0)
+    # Obtain the even maximum from array alongsie the axis 0
+    evenMaximum = np.amax(np.absolute(pafmath[1::2, :, :]), axis = 0)
+    
+    subplot = figure.add_subplot(2, 2, 3)
+    
+    # Set the title
+    subplot.set_title("Vector Map - Axis X")
+    
+    # Show the odd image with gray, translucent style
+    plt.imshow(oddMaximum, cmap = plt.cm.gray, alpha = 0.5)
+    
+    plt.grid(False)
+    plt.colorbar()
+    
+    # 4th image
+    
+    subplot = figure.add_subplot(2, 2, 4)
+    
+    # Set the title
+    subplot.set_title("Vector Map - Axis Y")
+    
+    # Show the even image with gray, translucent style
+    plt.imshow(evenMaximum, cmap = plt.cm.gray, alpha = 0.5)
+    
+    plt.colorbar()
+    plt.grid(False)
+    
+    plt.show()
+    
 files = glob.glob("../Inventory/Images/*.jpg")
 InferImages(files)
