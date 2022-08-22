@@ -107,7 +107,7 @@ def RecognizeVideo(originalPath, destinationPath, clipped = False, beginTime = 0
 def ProcessFrame(frame, estimator: TfPoseEstimator):
     
     # Infer the frame
-    keyParts = estimator.inference(frame, resize_to_default = False, upsample_size = 4.0)
+    keyParts = estimator.inference(frame, resize_to_default = True, upsample_size = 4.0)
     # Draw the pose onto original frame
     image = TfPoseEstimator.draw_humans(frame, keyParts, imgcopy = False)
     
@@ -155,7 +155,7 @@ def RecognizeLive():
             frame = TfPoseEstimator.draw_humans(frame, keyParts, imgcopy = False)
             
             # Display the fps string on the frame
-            cv2.putText(frame, "FPS: {}".format(1.0 / (time.time() - fpsTime)), (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.putText(frame, "FPS: {}".format(1.0 / (time.time() - fpsTime)), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             
             # Show the frame on window
             cv2.imshow("Pose Estimation in Realtime", frame)

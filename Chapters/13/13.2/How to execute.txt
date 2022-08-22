@@ -1,0 +1,14 @@
+keras_Realtime_Multi-Person_Pose_Estimation % python3 demo_image.py --image "../../Inventory/Images/Victor_test_0.jpg" --output "../../Inventory/Images/Victor_test_0_Trained.jpg" --model "../../Inventory/Models/model.h5"
+
+python3 demo_video.py --video "../../Inventory/Videos/test_video_1.mp4" --model "../../Inventory/Models/model.h5" --frame_ratio 1 --process_speed 4
+
+注意video_path = '../../Inventory/Videos/'
+    video_file = video_path + video
+
+    # Output location
+    output_path = '../../Inventory/Videos/outputs/'
+
+
+
+
+keras_Realtime_Multi-Person_Pose_Estimation % sudo python3 demo_camera.py --model "../../Inventory/Models/model.h5" --frame_ratio 1 --process_speed 4
