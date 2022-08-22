@@ -15,6 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 import sys
+import cv2
 
 sys.path.append("../Exclusion/tf-pose-estimation/")
 
