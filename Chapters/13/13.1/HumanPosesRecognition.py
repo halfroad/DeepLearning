@@ -20,13 +20,14 @@ import cv2
 sys.path.append("../Exclusion/tf-pose-estimation/")
 
 from PIL import Image
-
+from moviepy.editor import VideoFileClip
 
 # Import tf_pose module
 from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path
 
-def InferImages(paths):
+
+def InferImages(imagePath):
     
     # Specify the name of the model, can be cmu or mobilenet_thin
     name = "cmu"    # "mobilenet_thin
@@ -42,33 +43,72 @@ def InferImages(paths):
     model = get_graph_path(name)
     estimator = TfPoseEstimator(model, target_size = (width, height))
     
-    for path in paths:
+    # Load the image via PIL
+    image = Image.open(imagePath)
+    # Convert the PIL image into NumPy array
+    image = np.asarray(image)
         
-        # Load the image via PIL
-        image = Image.open(path)
-        # Convert the PIL image into NumPy array
-        image = np.asarray(image)
+    # Infer the image, return the key parts of body
+    keyParts = estimator.inference(image, resize_to_default = (width > 0 and height > 0), upsample_size = resizeOutputRatio)
+    image = TfPoseEstimator.draw_humans(image, keyParts, imgcopy = False)
         
-        # Infer the image, return the key parts of body
-        keyParts = estimator.inference(image, resize_to_default = (width > 0 and height > 0), upsample_size = resizeOutputRatio)
-        image = TfPoseEstimator.draw_humans(image, keyParts, imgcopy = False)
-        
-        '''
+    '''
 
-        # Initialize a window of size 7 * 12
-        figure, ax = plt.subplots(figsize = (7, 12))
+    # Initialize a window of size 7 * 12
+    figure, ax = plt.subplots(figsize = (7, 12))
         
-        # Show the image
-        ax.imshow(image)
-        '''
+    # Show the image
+    ax.imshow(image)
+    '''
         
-        PlotMaps(image, estimator)
-    
+    PlotMaps(image, estimator)
+        
     # Disable the grid
     plt.grid(False)
     
     plt.show()
     
+def RecognizeVideo(originalPath, destinationPath, clipped = False, beginTime = 0, endTime = 30):
+    
+    # Set the target window size
+    width = 375
+    height = 667
+    
+    name = "cmu"
+    model = get_graph_path(name)
+    
+    # Instantiate the TfPoseEstimator
+    estimator = TfPoseEstimator(model, target_size = (width, height))
+    
+    if clipped:
+    
+        # Initialize an instance of Video File Clip, trim from beginTime ~ endTime
+        videoFileClip = VideoFileClip(originalPath).subclip(beginTime, endTime)
+        
+        # Process each frame
+        whiteClip = videoFileClip.fl_image(lambda image: ProcessFrame(image, estimator))
+        
+        whiteClip.write_videofile(destinationPath)
+        
+    else:
+        
+        # Initialize an instance of Video File Clip
+        videoFileClip = VideoFileClip(originalPath)
+        
+        # Process each frame
+        whiteClip = videoFileClip.fl_image(lambda image: ProcessFrame(image, estimator))
+        
+        whiteClip.write_videofile(destinationPath)
+    
+def ProcessFrame(frame, estimator: TfPoseEstimator):
+    
+    # Infer the frame
+    keyParts = estimator.inference(frame, resize_to_default = False, upsample_size = 4.0)
+    # Draw the pose onto original frame
+    image = TfPoseEstimator.draw_humans(frame, keyParts, imgcopy = False)
+    
+    return image
+
 def PlotMaps(image, estimator):
     
     # Plot the paf map and heat map
@@ -152,6 +192,12 @@ def PlotMaps(image, estimator):
     plt.grid(False)
     
     plt.show()
-    
+
+'''
+
 files = glob.glob("../Inventory/Images/*.jpg")
-InferImages(files)
+InferImages(files[0])
+
+'''
+
+RecognizeVideo("../Inventory/Videos/test_video_1.mp4", "../Inventory/Videos/test_video_1_edited.mp4")
