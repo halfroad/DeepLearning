@@ -16,15 +16,19 @@ import matplotlib.pyplot as plt
 import glob
 import sys
 import cv2
+import time
+import io
+import base64
 
 sys.path.append("../Exclusion/tf-pose-estimation/")
 
 from PIL import Image
 from moviepy.editor import VideoFileClip
+from IPython.display import HTML
 
 # Import tf_pose module
 from tf_pose.estimator import TfPoseEstimator
-from tf_pose.networks import get_graph_path
+from tf_pose.networks import get_graph_path, model_wh
 
 
 def InferImages(imagePath):
@@ -74,7 +78,7 @@ def RecognizeVideo(originalPath, destinationPath, clipped = False, beginTime = 0
     width = 375
     height = 667
     
-    name = "cmu"
+    name = "mobilenet_thin"
     model = get_graph_path(name)
     
     # Instantiate the TfPoseEstimator
@@ -108,6 +112,64 @@ def ProcessFrame(frame, estimator: TfPoseEstimator):
     image = TfPoseEstimator.draw_humans(frame, keyParts, imgcopy = False)
     
     return image
+
+def RecognizeLive():
+    
+    fpsTime = 0
+    
+    # Use the pre-trained model
+    name = "mobilenet_thin"
+    
+    # The camera #0,the default camera for the computer
+    camera = 0
+    resizeOutRatio = 4.0
+    
+    # Set the target size
+    width = 600
+    height = 400
+    
+    graph = get_graph_path(name)
+    
+    estimator = TfPoseEstimator(graph, target_size = (width, height))
+    
+    # Open the camera #0
+    videoCapture = cv2.VideoCapture(0)
+    
+    if not videoCapture.isOpened():
+        
+        print("Cannot open the camera")
+        exit()
+    
+    # Iterate the frames with infinite while loop
+    while True:
+        
+        # Read the frame from camera
+        ret, frame = videoCapture.read()
+        
+        if ret and frame is not None:
+        
+            # Infer the image
+            keyParts = estimator.inference(frame, resize_to_default = (width > 0 and height > 0), upsample_size = resizeOutRatio)
+            
+            # Draw the infered pose of key parts on the original frame
+            frame = TfPoseEstimator.draw_humans(frame, keyParts, imgcopy = False)
+            
+            # Display the fps string on the frame
+            cv2.putText(frame, "FPS: {}".format(1.0 / (time.time() - fpsTime)), (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            
+            # Show the frame on window
+            cv2.imshow("Pose Estimation in Realtime", frame)
+            
+            fpsTime = time.time()
+        
+        # Exit the capture when key "q" is pressed in the case the window is focused on
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+        
+    # Release the memory of camera
+    videoCapture.release()
+    # After the camera is released, dispose all the windows
+    cv2.destroyAllWindows()
 
 def PlotMaps(image, estimator):
     
@@ -192,12 +254,28 @@ def PlotMaps(image, estimator):
     plt.grid(False)
     
     plt.show()
+    
+def PlayVideo(path):
+    
+    # Load the video via io
+    video = io.open(path, "r + b").read()
+    
+    # Encode the binary of video with base64
+    encoded = base64.b64encode(video)
+    
+    # Display the base64 encoded video with video tag in HTML
+    HTML(data = '''<video alt="Video Pose Recognized" controls>
+                        <source src="data:video/mp4;base64,{0}" type="video/mp4" />
+                    </video>'''.format(encoded.decode("ascii")))
 
 '''
 
 files = glob.glob("../Inventory/Images/*.jpg")
 InferImages(files[0])
 
+RecognizeVideo("../Inventory/Videos/test_video_1.mp4", "../Inventory/Videos/test_video_1_edited.mp4", clipped = True, endTime = 5)
+PlayVideo("../Inventory/Videos/test_video_1_edited.mp4")
+
 '''
 
-RecognizeVideo("../Inventory/Videos/test_video_1.mp4", "../Inventory/Videos/test_video_1_edited.mp4")
+RecognizeLive()
