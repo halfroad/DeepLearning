@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import glob
 import sys
 
-sys.path.append("../tf-pose-estimation/")
+sys.path.append("../Exclusion/tf-pose-estimation/")
 
 from PIL import Image
 

@@ -6,6 +6,7 @@
 
 Backup/
 Inventory/
+Exclusion/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
