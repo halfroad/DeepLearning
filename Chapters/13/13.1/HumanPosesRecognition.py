@@ -106,10 +106,10 @@ def PlotMaps(image, estimator):
     plt.imshow(backgroundImage, alpha = 0.5)
     
     # Invert the heatmat array alongside axis 2, obtain the maximum, that is the detected protruding points
-    heatmath = np.amax(estimator.heatMat[:, :, : -1], axis = 2)
+    heatMat = np.amax(estimator.heatMat[:, :, : -1], axis = 2)
     
     # Show the image with gray and translucent style
-    plt.imshow(heatmath, cmap = plt.cm.gray, alpha = 0.5)
+    plt.imshow(heatMat, cmap = plt.cm.gray, alpha = 0.5)
     
     # Set the title for subplot
     subplot.set_title("Dot Network")
@@ -119,13 +119,13 @@ def PlotMaps(image, estimator):
     plt.colorbar()
     
     # 3rd image
-    # Transpose the pafMath array
-    pafmath = estimator.pafMath.transpose((2, 0, 1))
+    # Transpose the pafMat array
+    pafMat = estimator.pafMat.transpose((2, 0, 1))
     
     # Obtain the odd maximum from array alongside the axis 0
-    oddMaximum = np.amax(np.absolute(pafmath[::2, :, :]), axis = 0)
+    oddMaximum = np.amax(np.absolute(pafMat[::2, :, :]), axis = 0)
     # Obtain the even maximum from array alongsie the axis 0
-    evenMaximum = np.amax(np.absolute(pafmath[1::2, :, :]), axis = 0)
+    evenMaximum = np.amax(np.absolute(pafMat[1::2, :, :]), axis = 0)
     
     subplot = figure.add_subplot(2, 2, 3)
     
