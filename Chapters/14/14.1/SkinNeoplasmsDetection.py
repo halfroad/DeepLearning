@@ -3,6 +3,8 @@
 import pandas as pd
 import os
 
+from sklearn import datasets
+
 # Move files
 import shutil
 
@@ -30,14 +32,14 @@ def ExtractImages():
     '''
     
     trainingInput = "ISIC_2019_Training_Input/" * 2
-    trainingDataset = "Train/Datasets/"
+    trainingDatasets = "Train/Datasets/"
     
     melanomas = trainingGroundTruth[trainingGroundTruth["MEL"] == 1.0]
     
     for image in melanomas["image"]:
     
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "melanoma/" + image + ".jpg"
+        destination = root + trainingDatasets + "melanoma/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -49,7 +51,7 @@ def ExtractImages():
     for image in melanocyticNevuses["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "melanocytic_nevus/" + image + ".jpg"
+        destination = root + trainingDatasets + "melanocytic_nevus/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -61,7 +63,7 @@ def ExtractImages():
     for image in basalCellCarcinomas["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "basal_cell_carcinoma/" + image + ".jpg"
+        destination = root + trainingDatasets + "basal_cell_carcinoma/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -73,7 +75,7 @@ def ExtractImages():
     for image in actinicKeratosises["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "actinic_keratosis/" + image + ".jpg"
+        destination = root + trainingDatasets + "actinic_keratosis/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -85,7 +87,7 @@ def ExtractImages():
     for image in benignKeratosisLikeLesions["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "benign_keratosis-like_lesion/" + image + ".jpg"
+        destination = root + trainingDatasets + "benign_keratosis-like_lesion/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -97,7 +99,7 @@ def ExtractImages():
     for image in dermatofibromas["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "dermatofibroma/" + image + ".jpg"
+        destination = root + trainingDatasets + "dermatofibroma/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -109,7 +111,7 @@ def ExtractImages():
     for image in vascularLesions["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "vascular_lesion/" + image + ".jpg"
+        destination = root + trainingDatasets + "vascular_lesion/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -120,7 +122,7 @@ def ExtractImages():
     for image in squamousCellCarcinomas["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "squamous_cell_carcinoma/" + image + ".jpg"
+        destination = root + trainingDatasets + "squamous_cell_carcinoma/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
@@ -131,11 +133,29 @@ def ExtractImages():
     for image in unknowns["image"]:
 
         source = root + trainingInput + image + ".jpg"
-        destination = root + trainingDataset + "unknown/" + image + ".jpg"
+        destination = root + trainingDatasets + "unknown/" + image + ".jpg"
         
         shutil.copy(source, destination)
         
         print("File at {} copied to {}.".format(source, destination))
     
 
+def Prepare():
+    
+    root = "../Inventory/ISIC_2019/"
+    trainingDatasets = "Train/Datasets/"
+
+    files = datasets.load_files(root + trainingDatasets)
+    
+    print(files.dir())
+    
+    fileNames = files["filenames"]
+    targets = files["target"]
+    targetNames = files["target_names"]
+    
+    print("fileNames.shape = {}".format(fileNames))
+    
+    
+    
 # ExtractImages()
+Prepare()
