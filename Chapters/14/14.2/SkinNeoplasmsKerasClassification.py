@@ -7,6 +7,8 @@ from keras.models import Sequential, load_model
 from keras.callbacks import ModelCheckpoint
 
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 import sys
 
 sys.path.append("../14.1")
@@ -134,6 +136,34 @@ def Predict(imagePath):
     
     print(probabilities)
     
+    return probabilities
+    
+def PlotProbabilities(imagePath, targetNames, probabilities):
+    
+    '''
+    Plot the testing pathologic image and show the predicted probabilities
+    '''
+    
+    # Create an object of figure
+    figure, ax = lot.subplots()
+    
+    # Set the size of container
+    figure.set_size_inches(5, 5)
+    
+    # concatenate the name of pathologic image and its probabilities
+    title = "\n".join(["{}: {: .2f}%\n".format(n, probabilities[i]) for i, n in enumerate(targetNames)])
+    
+    # Set the annotation of the image on the top right corner
+    ax.text(1.01, 0.7, title, horizontalalignment = "left", verticalalignment = "bottom", transform = ax.transAxes)
+    
+    # Read the values inside the image
+    _image = matplotlib.image.imread(imagePath)
+    
+    # Show the pathologic image on Axes
+    ax.imshow(_image)
+    
+    plt.show()
+    
 # Avoid the I/O error when reading image via PIL, set the Image Truncation
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -159,4 +189,8 @@ model = CreateModel(targetNames, trainTensors)
 # TrainModel(model, cancersTrain, cancersValidation, trainTensors, validationTensors)
 
 # Evaluate(model, testTensors)
-Predict("../Inventory/Images/nevus_ISIC_0007332.jpg")
+
+path = "../Inventory/Images/nevus_ISIC_0007332.jpg"
+
+probabilities = Predict(path)
+PlotProbabilities(path, targetNames, probabilities[0])
