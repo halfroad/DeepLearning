@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D, Dropout, Dense
 from keras.models import Sequential
+from keras.callbacks import ModelCheckpoint
 
 import numpy as np
 import sys
@@ -84,7 +85,29 @@ def CreateModel(targetNames, trainTensors):
     
     return model
     
-
+def TrainModel(model, cancersTrain, cancersValidation, trainTensors, validationTensors):
+    
+    model.compile(optimizer = "adam", loss = "sparse_categorical_crossentropy", metrics = ["accuracy"])
+    
+    # If the sparse_categorical_crossentropy is used for Loss Function here, following one-hot encoding is needed anymore.
+    # If categorical_crossentropy is used, following statements shall be commented out
+    # from keras import utils
+    # cancersTrain = utils.to_categorical(cancersTrain)
+    # cancersValidation = utils.to_categorical(cancersValidation)
+    # cancersTest = utils.to_categorical(cancersTest)
+    
+    # Create the object of CheckPoint
+    checkPoint = ModelCheckpoint(filepath = "../Inventory/Models/Saved/SkinCancer.BestWeights.hdf5", verbose = 1, save_best_only = True)
+    
+    epochs = 10
+    
+    # Train the model
+    model.fit(trainTensors, cancersTrain,
+              validation_data = (validationTensors, cancersValidation),
+              epochs = epochs,
+              batch_size = 20,
+              callbacks = [checkPoint], verbose = 1)
+    
 # Avoid the I/O error when reading image via PIL, set the Image Truncation
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -100,9 +123,11 @@ imagesTrain, imagesTest, imagesValidation, cancersValidation, cancersTrain, canc
 trainTensors = ImagesTensorize(imagesTrain).astype(np.float32) / 255
 
 # Handle the Validation Set
-vaidationTensors = ImagesTensorize(imagesValidation).astype(np.float32) / 255
+validationTensors = ImagesTensorize(imagesValidation).astype(np.float32) / 255
 
 # Handle the Test Set
 testTensors = ImagesTensorize(imagesTest).astype(np.float32) / 255
 
-CreateModel(targetNames, trainTensors)
+model = CreateModel(targetNames, trainTensors)
+
+TrainModel(model, cancersTrain, cancersValidation, trainTensors, validationTensors)
