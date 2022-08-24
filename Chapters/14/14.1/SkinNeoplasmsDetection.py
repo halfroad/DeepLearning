@@ -12,15 +12,15 @@ def AcquireImages():
     
     files = datasets.load_files(path)
     
-    images = files["filenames"]
+    imagePaths = files["filenames"]
     targets = files["target"]
     targetNames = files["target_names"]
     
-    print("images.shape = {}, images[: 20] = {}, targets.shape = {}, targets = {}, targetNames = {}.".format(images.shape, images[: 20], targets.shape, targets, targetNames))
+    print("imagePaths.shape = {}, imagePaths[: 20] = {}, targets.shape = {}, targets = {}, targetNames = {}.".format(imagePaths.shape, imagePaths[: 20], targets.shape, targets, targetNames))
     
-    return images, targets, targetNames
+    return imagePaths, targets, targetNames
     
-def Visualize(images, targets, targetNames):
+def Visualize(imagePaths, targets, targetNames):
     
     # Use the default style for matplotlib when drawing
     plt.style.use("default")
@@ -31,11 +31,11 @@ def Visualize(images, targets, targetNames):
     # Set the size of figure
     figure.set_size_inches(8, 7)
     
-    # Select 9 numbers randomly, means 9 disease images
-    randomNumbers = np.random.choice(len(images), 9)
+    # Select 9 numbers randomly, means 9 disease imagePaths
+    randomNumbers = np.random.choice(len(imagePaths), 9)
     
-    # Select 9 images from dataset, and its pathes
-    randomimages = images[randomNumbers]
+    # Select 9 imagePaths from dataset, and its pathes
+    randomImagePaths = imagePaths[randomNumbers]
     
     index = 0
     
@@ -45,7 +45,7 @@ def Visualize(images, targets, targetNames):
         for column in range(3):
             
             # Read the value from image
-            _image = image.imread(randomimages[index])
+            _image = image.imread(randomImagePaths[index])
             
             shape = _image.shape
             
@@ -64,9 +64,9 @@ def Visualize(images, targets, targetNames):
             
     plt.show()
 
-def Split(images, targets):
+def Split(imagePaths, targets):
 
-    imagesTrain, imagesTest, cancersTrain, cancersTest = model_selection.train_test_split(images, targets, test_size = 0.2)
+    imagesTrain, imagesTest, cancersTrain, cancersTest = model_selection.train_test_split(imagePaths, targets, test_size = 0.2)
     
     # Bisect the test set into test set and validation set
     half = int(len(imagesTest) / 2)
@@ -83,7 +83,11 @@ def Split(images, targets):
     
     return imagesTrain, imagesTest, imagesValidation, cancersValidation, cancersTrain, cancersTest
     
-images, targets, targetNames = AcquireImages()
-Visualize(images, targets, targetNames)
+'''
 
-imagesTrain, imagesTest, imagesValidation, cancersValidation, cancersTrain, cancersTest = Split(images, targets)
+imagePaths, targets, targetNames = AcquireImages()
+Visualize(imagePaths, targets, targetNames)
+
+imagesTrain, imagesTest, imagesValidation, cancersValidation, cancersTrain, cancersTest = Split(imagePaths, targets)
+
+'''
