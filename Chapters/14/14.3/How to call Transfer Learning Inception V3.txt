@@ -1,0 +1,9 @@
+Simple_Transfer_Learning % python3 -m retrain --bottleneck_dir=../../Inventory/BottleNecks --how_many_training_steps=1000 --learning_rate=0.05 --model_dir=../../Inventory/Models --summaries_dir=../../Inventory/TrainingSummaries/"inception_v3" --output_graph=../../Inventory/Models/RetrainedGraph.pb --output_labels=../../Inventory/Models/RetrainedLables.txt --architecture="inception_v3" --image_dir=../../Inventory/DataSetsSmall
+
+
+
+Simple_Transfer_Learning % python3 -m label_image --graph=../../Inventory/Models/RetrainedGraph.pb --image=/Users/jinhui/Projects/DeepLearning/Chapters/14/Inventory/Images/nevus_ISIC_0007332.jpg --labels=../../Inventory/Models/RetrainedLables.txt
+
+
+
+Simple_Transfer_Learning % tensorboard --logdir ../../Inventory/TrainingSummaries/
