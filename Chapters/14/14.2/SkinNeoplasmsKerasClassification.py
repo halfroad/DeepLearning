@@ -3,7 +3,7 @@ from PIL import ImageFile
 from tqdm import tqdm
 
 from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D, Dropout, Dense
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.callbacks import ModelCheckpoint
 
 import numpy as np
@@ -108,6 +108,32 @@ def TrainModel(model, cancersTrain, cancersValidation, trainTensors, validationT
               batch_size = 20,
               callbacks = [checkPoint], verbose = 1)
     
+def Evaluate(model, testTensors):
+    
+    # Load the weights onto model just trained
+    model.load_weights("../Inventory/Models/Saved/SkinCancer.BestWeights.hdf5")
+    # Evaluate the accuracy of model
+    score = model.evaluate(testTensors, cancersTest, verbose = 1)
+    
+    print("Test {}: {: .2f}. Test {}: {: .2f}.".format(model.metrics_names[0], score[0] * 100, model.metrics_names[1], score[1] * 100))
+
+def Predict(imagePath):
+    
+    # Predict by loading the weights trained
+    model = load_model("../Inventory/Models/Saved/SkinCancer.BestWeights.hdf5")
+    
+    # Load a pathologic image to evaluate the accuracy
+    # Convert the pathologic image into 4 dimensions NumPy Array
+    imageTensor = Tensorize(imagePath)
+    
+    # Normalization， convert to the values between 0 ～ 1
+    imageTensor = imageTensor.astype(np.float32) / 2555
+    
+    # Predict the probabilities
+    probabilities = model.predict(imageTensor)
+    
+    print(probabilities)
+    
 # Avoid the I/O error when reading image via PIL, set the Image Truncation
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -130,4 +156,7 @@ testTensors = ImagesTensorize(imagesTest).astype(np.float32) / 255
 
 model = CreateModel(targetNames, trainTensors)
 
-TrainModel(model, cancersTrain, cancersValidation, trainTensors, validationTensors)
+# TrainModel(model, cancersTrain, cancersValidation, trainTensors, validationTensors)
+
+# Evaluate(model, testTensors)
+Predict("../Inventory/Images/nevus_ISIC_0007332.jpg")
