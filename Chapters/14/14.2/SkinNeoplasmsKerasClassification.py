@@ -145,10 +145,10 @@ def PlotProbabilities(imagePath, targetNames, probabilities):
     '''
     
     # Create an object of figure
-    figure, ax = lot.subplots()
+    figure, ax = plt.subplots()
     
     # Set the size of container
-    figure.set_size_inches(5, 5)
+    figure.set_size_inches(8, 5)
     
     # concatenate the name of pathologic image and its probabilities
     title = "\n".join(["{}: {: .2f}%\n".format(n, probabilities[i]) for i, n in enumerate(targetNames)])
