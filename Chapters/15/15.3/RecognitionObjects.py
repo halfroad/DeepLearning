@@ -6,13 +6,8 @@ import tarfile
 import tensorflow as tf
 import zipfile
 import glob
-import matplotlib
 
-matplotlib.use("TkAgg")
-
-import matplotlib.pyplot as plt
 from cv2 import imread
-
 from urllib import request
 from collections import defaultdict
 from io import StringIO
@@ -27,6 +22,10 @@ from object_detection.utils import ops as utilOps
 # Import the uitls module under Object Detection
 from object_detection.utils import label_map_util as labelMapUtil
 from object_detection.utils import visualization_utils as visualizationUtils
+
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 DIRECTORY = "../Exclusion/Downloads/"
 EXTENSION = ".tar.gz"
@@ -187,7 +186,7 @@ def DetectImages():
     
     paths = glob.glob("../Exclusion/Images/*.jpeg")
     
-    imageSize = (20, 16)
+    imageSize = (12, 8)
     
     for path in paths:
                 
@@ -201,7 +200,7 @@ def DetectImages():
         outputDictionary = Infer(array, detectionGraph)
         
         # Visualize the detection
-        visualizationUtils.visualize_boxes_and_labels_on_image_array(array, outputDictionary["detection_boxes"], outputDictionary["detection_classes"], outputDictionary["detection_scores"], categories, instance_masks = outputDictionary.get("detection_masks"), use_normalized_coordinates = True, line_thickness = 8)
+        visualizationUtils.visualize_boxes_and_labels_on_image_array(array, outputDictionary["detection_boxes"], outputDictionary["detection_classes"], outputDictionary["detection_scores"], categories, instance_masks = outputDictionary.get("detection_masks"), use_normalized_coordinates = True, line_thickness = 2)
         
         plt.figure(figsize = imageSize)
         plt.imshow(array)
