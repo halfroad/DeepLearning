@@ -196,7 +196,7 @@ def DetectObjects(name):
         
         image = Image.open(path)
         # Comvert the image into NumPy array
-        array = Iamge2Array(image)
+        array = Image2Array(image)
         
         # Since the model needs the shape [1, None, None, 3], the dimensions needs to expand
         expandedArray = np.expand_dims(array, axis = 0)
