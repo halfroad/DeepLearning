@@ -10,7 +10,7 @@ from urllib import request
 from PIL import Image
 
 # Import the superior folder for performing the modules
-sys.path.append("../models/research/")
+sys.path.append("../Exclusion/models/research/")
 
 # Import the uitls module under Object Detection
 from object_detection.utils import ops as utilsOps, label_map_util as labelMapUtil, visualization_utils as visualizationUtils
@@ -85,7 +85,7 @@ def ProgressReportHook(count, blockSize, totalSize):
 def AcquireClassifications():
     
     # mscoco_label_pbtxt stores the mapping relationship between classifications and indexes
-    labels = os.path.join("../models/research/object_detection/data", "oid_v4_label_map.pbtxt")
+    labels = os.path.join("../Exclusion/models/research/object_detection/data", "mscoco_complete_label_map.pbtxt")
     classificationsNumber = sys.maxsize
     
     labelsMap = labelMapUtil.load_labelmap(labels)
@@ -235,7 +235,7 @@ def Start():
     graph = ExtractGraph(frozenGraphPath)
     categories = AcquireClassifications()
 
-    EditVideo(graph, categories, "../Exclusion/Videos/The_Bund.mp4", True, 0, 10)
+    EditVideo(graph, categories, "../Exclusion/Videos/The_Bund.mp4")
 
 print("tensorflow version: {}".format(tf.__version__))
 

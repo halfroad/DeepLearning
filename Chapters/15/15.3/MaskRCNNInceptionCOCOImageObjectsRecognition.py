@@ -10,7 +10,7 @@ from urllib import request
 from PIL import Image
 
 # Import the superior folder for performing the modules
-sys.path.append("../models/research/")
+sys.path.append("../Exclusion/models/research/")
 
 # Import the uitls module under Object Detection
 from object_detection.utils import ops as utilOps, label_map_util as labelMapUtil, visualization_utils as visualizationUtils
@@ -80,7 +80,7 @@ def ExtractGraph(frozenGraphPath):
 def AcquireClassifications():
     
      # mscoco_label_pbtxt stores the classifications and mapping relation of index
-    labels = os.path.join("../models/research/object_detection/data", "oid_v4_label_map.pbtxt")
+    labels = os.path.join("../Exclusion/models/research/object_detection/data", "mscoco_complete_label_map.pbtxt")
     classificationsNumber = sys.maxsize
     
     labelsMap = labelMapUtil.load_labelmap(labels)
