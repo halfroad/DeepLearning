@@ -162,8 +162,8 @@ def Infer(image, sess, graph, categories):
             outputDictionary["detection_masks"] = outputDictionary["detection_masks"][0]
                         
         # Reflect the detected boundaries of object on the image
-        imageCopy = np.copy(image)
-        visualizationUtils.visualize_boxes_and_labels_on_image_array(imageCopy,
+        # imageCopy = np.copy(image)
+        visualizationUtils.visualize_boxes_and_labels_on_image_array(image,
                                                                      outputDictionary["detection_boxes"],
                                                                      outputDictionary["detection_classes"],
                                                                      outputDictionary["detection_scores"],
@@ -172,7 +172,7 @@ def Infer(image, sess, graph, categories):
                                                                      use_normalized_coordinates = True,
                                                                      line_thickness = 1)
         
-        return imageCopy
+        return image
     
 def DetectObjects(graph, categories, image):
     
@@ -184,7 +184,7 @@ def DetectObjects(graph, categories, image):
             
             with tf.compat.v1.Session(graph = graph) as sess:
                 
-                array = Infer(image, sess, graph, categories)
+                image = Infer(np.array(image), sess, graph, categories)
                 
     counter += 1
     
