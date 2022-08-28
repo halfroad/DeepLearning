@@ -26,7 +26,7 @@ def DownloadModel(name):
     folder = "../Exclusion/Downloads/"
     
     # Freeze the folder Graph after the model gets downloaded and uncompressed. The architecture of pretrained model is stored in Graph
-    frozenGraphPath = folder + name + "/frozen_inference_graph.pb"
+    graphPath = folder + name + "/frozen_inference_graph.pb"
     
     downloadBaseURL = "http://download.tensorflow.org/models/object_detection/"
     
@@ -37,7 +37,7 @@ def DownloadModel(name):
     
     path = folder + fileName
     
-    response = request.urlretrieve(url, path, ProgressReportHook)
+    response = request.urlretrieve(url, path, ProgressReportCallback)
     
     print("response = {}".format(response))
     
@@ -53,34 +53,34 @@ def DownloadModel(name):
             # tar.extract(file, os.getcwd())
             tar.extract(member, folder)
             
-    return frozenGraphPath
+    return graphPath
 
-def ProgressReportHook(count, blockSize, totalSize):
+def ProgressReportCallback(count, blockSize, totalSize):
     
-    print("Count = {}, Block Size = {}, Total Size = {}".format(count, blockSize, totalSize))
+    print("Count = {}, Block Size = {}, Total Size = {}, Percentage = {:.2f}%".format(count, blockSize, totalSize, 100 * (count * blockSize) / totalSize))
             
-def ExtractGraph(frozenGraphPath):
+def ExtractGraph(graphPath):
     
-    detectionGraph = tf.Graph()
+    graph = tf.Graph()
     
-    with detectionGraph.as_default():
+    with graph.as_default():
         
         odGraphDef = tf.compat.v1.GraphDef()
         
-        with tf.io.gfile.GFile(frozenGraphPath, "rb") as gf:
+        with tf.io.gfile.GFile(graphPath, "rb") as gf:
             
             serializedGraph = gf.read()
             
             odGraphDef.ParseFromString(serializedGraph)
             tf.import_graph_def(odGraphDef, name = "")
             
-            return detectionGraph
+            return graph
             
 
-def AcquireClassifications():
+def AcquireClassifications(name):
     
      # mscoco_label_pbtxt stores the classifications and mapping relation of index
-    labels = os.path.join("../Exclusion/models/research/object_detection/data", "mscoco_complete_label_map.pbtxt")
+    labels = os.path.join("../Exclusion/models/research/object_detection/data", name)
     classificationsNumber = sys.maxsize
     
     labelsMap = labelMapUtil.load_labelmap(labels)
@@ -179,14 +179,14 @@ def DetectObjects(name):
     
     exclusion = "../Exclusion/"
     folder = exclusion + "Downloads/" + name
-    frozenGraphPath = folder + "/frozen_inference_graph.pb"
+    graphPath = folder + "/frozen_inference_graph.pb"
     
-    if not os.path.exists(frozenGraphPath):
+    if not os.path.exists(graphPath):
        #  shutil.rmtree(folder)
-       frozenGraphPath = DownloadModel(name)
+       graphPath = DownloadModel(name)
     
-    detectionGraph = ExtractGraph(frozenGraphPath)
-    categories = AcquireClassifications()
+    graph = ExtractGraph(graphPath)
+    categories = AcquireClassifications("mscoco_complete_label_map.pbtxt")
     
     paths = glob.glob(exclusion + "/Images/*.jpeg")
     
@@ -202,7 +202,7 @@ def DetectObjects(name):
         expandedArray = np.expand_dims(array, axis = 0)
         
         # Perform the detection
-        outputDictionary = Infer(array, detectionGraph)
+        outputDictionary = Infer(array, graph)
         
         # Visualize the detection
         visualizationUtils.visualize_boxes_and_labels_on_image_array(array,
