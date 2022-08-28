@@ -149,7 +149,7 @@ def Capture(graph, categories):
                                                                                  line_thickness = 1)
                     
                     # Show the result on window
-                    cv.imshow("Live Obejcts Detection from Camera", cv2.resize(frame, (960, 7000)))
+                    cv2.imshow("Live Obejcts Detection from Camera", cv2.resize(frame, (960, 7000)))
                     
                     #  Exit the application when keycode "q" is pressed
                     if cv2.waitKey(25) & 0xFF == ord('q'):
