@@ -175,20 +175,7 @@ def Image2Array(image):
     
     return np.array(image.getdata()).reshape((height, width, 3)).astype(np.uint8)
 
-def DetectObjects(name):
-    
-    exclusion = "../Exclusion/"
-    folder = exclusion + "Downloads/" + name
-    graphPath = folder + "/frozen_inference_graph.pb"
-    
-    if not os.path.exists(graphPath):
-       #  shutil.rmtree(folder)
-       graphPath = DownloadModel(name)
-    
-    graph = ExtractGraph(graphPath)
-    categories = AcquireClassifications("mscoco_complete_label_map.pbtxt")
-    
-    paths = glob.glob(exclusion + "/Images/*.jpeg")
+def DetectObjects(name, graph, categories, paths):
     
     imageSize = (12, 8)
     
@@ -224,7 +211,24 @@ def DetectObjects(name):
         plt.show()
         
 
+def Start():
+    
+    name = "mask_rcnn_inception_v2_coco_2018_01_28"
+    exclusion = "../Exclusion/"
+    folder = exclusion + "Downloads/" + name
+    graphPath = folder + "/frozen_inference_graph.pb"
+    
+    if not os.path.exists(graphPath):
+       #  shutil.rmtree(folder)
+       graphPath = DownloadModel(name)
+    
+    graph = ExtractGraph(graphPath)
+    categories = AcquireClassifications("mscoco_complete_label_map.pbtxt")
+    
+    paths = glob.glob(exclusion + "/Images/*.jpeg")
+    
+    DetectObjects(name, graph, categories, paths)
+    
 print("tensorflow version: {}".format(tf.__version__))
 
-DetectObjects("mask_rcnn_inception_v2_coco_2018_01_28")
-# DetectImages("faster_rcnn_inception_v2_coco_2018_01_28")
+Start()
