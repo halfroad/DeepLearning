@@ -202,7 +202,7 @@ def EditVideo(graph, categories, path, clipped = False, beginTime = 0, endTime =
         clip = videoFileClip.fl_image(lambda image: DetectObjects(graph, categories, image))
         
         # Export the video into local disk, and show the percentage of cimpletion
-        clip.write_videofile(editedVideo)
+        clip.write_videofile(editedVideo, audio_codec = "aac")
         
     else:
         

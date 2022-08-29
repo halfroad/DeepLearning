@@ -92,7 +92,7 @@ def RecognizeVideo(originalPath, destinationPath, clipped = False, beginTime = 0
         # Process each frame
         whiteClip = videoFileClip.fl_image(lambda image: ProcessFrame(image, estimator))
         
-        whiteClip.write_videofile(destinationPath)
+        whiteClip.write_videofile(destinationPath, audio_codec = "aac")
         
     else:
         
@@ -102,7 +102,7 @@ def RecognizeVideo(originalPath, destinationPath, clipped = False, beginTime = 0
         # Process each frame
         whiteClip = videoFileClip.fl_image(lambda image: ProcessFrame(image, estimator))
         
-        whiteClip.write_videofile(destinationPath)
+        whiteClip.write_videofile(destinationPath, audio_codec = "aac")
     
 def ProcessFrame(frame, estimator: TfPoseEstimator):
     
