@@ -147,9 +147,12 @@ def Capture(graph, categories):
                                                                                  categories,
                                                                                  use_normalized_coordinates = True,
                                                                                  line_thickness = 1)
+                                                                                 
+                    # print(["Object " + categories.get(value)["name"] + " is detected, Crediential Scores: " + str(scores[0, index]) for index, value in enumerate(classes[0]) if scores[0, index] > 0.8])
+                    print([[categories.get(value)["name"], str(scores[0, index])] for index, value in enumerate(classes[0]) if scores[0, index] > 0.7])
                     
                     # Show the result on window
-                    cv2.imshow("Live Obejcts Detection from Camera", cv2.resize(frame, (960, 700)))
+                    cv2.imshow("Live Obejcts Detection from Camera", cv2.resize(frame, (1280, 800)))
                     
                     #  Exit the application when keycode "q" is pressed
                     if cv2.waitKey(25) & 0xFF == ord('q'):
