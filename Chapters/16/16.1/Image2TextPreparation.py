@@ -30,7 +30,7 @@ def Parse(path):
         
         return dictionary, images, annotations
         
-def Preview(name, annotations):
+def Preview(name, imagesProperties, annotations):
     
     '''
 
@@ -47,7 +47,7 @@ def Preview(name, annotations):
         if annotation["image_id"] == name:
             
             # Iterate the images array
-            for prop in images:
+            for prop in imagesProperties:
                 
                 # Remove the extension name
                 fileName = prop["file_name"][: -4]
@@ -123,7 +123,7 @@ def Split():
         
     return trainImagesPaths, validationImagesPaths
     
-def LinkImagesAnnotations(paths, images, annotations, isTrain = False):
+def LinkImagesAnnotations(paths, imagesProperties, annotations, isTrain = False):
     
     # Parental folder
     folder = len(os.getcwd() + "/../Exclusion/Datasets/" + ("Trains/" if isTrain else "Validations/"))
@@ -149,11 +149,11 @@ def LinkImagesAnnotations(paths, images, annotations, isTrain = False):
             
         fileName = path[folder:]
         
-        for prop in images:
+        for prop in imagesProperties:
             
             if prop["file_name"] == fileName:
                 
-                annotationsJson.append(prop)
+                imagesJson.append(prop)
                 
                 break
             
@@ -175,10 +175,10 @@ def Merge(dictionary, imagesJson, annotationsJson, storagePath):
         
         f.write(json.dumps(jsonObject))
 
-dictionary, images, annotations = Parse(os.getcwd() + "/../Exclusion/annotations/captions_val2017.json")
+dictionary, imagesProperties, annotations = Parse(os.getcwd() + "/../Exclusion/annotations/captions_val2017.json")
 
-Preview(int("000000037777"), annotations)
-Preview(int("000000005037"), annotations)
+Preview(int("000000037777"), imagesProperties, annotations)
+Preview(int("000000005037"), imagesProperties, annotations)
 
 trainPaths, validationPaths = Split()
 
@@ -188,8 +188,10 @@ if not os.path.exists(mergedTrainsPath):
     
     print("Linking images and annotations for Trains Set")
     
-    trainImagesJson, trainAnnotationsJson = LinkImagesAnnotations(trainPaths, images, annotations, isTrain = True)
-
+    trainImagesJson, trainAnnotationsJson = LinkImagesAnnotations(trainPaths, imagesProperties, annotations, isTrain = True)
+    
+    i = 0
+    
     print("Merging images and annotations for Trains Set")
     
     # Merge the trains set
@@ -201,7 +203,7 @@ if not os.path.exists(mergedValidationsPath):
     
     print("Linking images and annotations for Validations Set")
 
-    validationImagesJson, validationAnnotationsJson = LinkImagesAnnotations(validationPaths, images, annotations)
+    validationImagesJson, validationAnnotationsJson = LinkImagesAnnotations(validationPaths, imagesProperties, annotations)
 
     print("Merging images and annotations for Validations Set")
     

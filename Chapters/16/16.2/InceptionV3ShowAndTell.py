@@ -1,5 +1,6 @@
 import os
 import json
+import nltk
 
 from glob import glob
 
@@ -34,16 +35,26 @@ def EnsureConsistency():
     print("Keys in validationsJsonDictionary: {}".format(validationsJsonDictionary.keys()))
     
     # Statistics of trains set and validations set
-    trainsJsonImagesPaths = trainsJsonDictionary["images"]
-    validationsJsonImagesPaths = validationsJsonDictionary["images"]
+    trainsJsonImagesProperties = trainsJsonDictionary["images"]
+    validationsJsonImagesProperties = validationsJsonDictionary["images"]
     
-    trainsJsonAnnotationsPaths = trainsJsonDictionary["annotations"]
-    validationsJsonAnnotationsPaths = validationsJsonDictionary["annotations"]
+    trainsJsonAnnotationsProperties = trainsJsonDictionary["annotations"]
+    validationsJsonAnnotationsProperties = validationsJsonDictionary["annotations"]
     
     print("Trains: \r")
-    print("Number of Images: {}, number of Image Properties: {}, number of Image Annotations: {}.".format(len(trainImagePaths), len(trainsJsonImagesPaths), len(trainsJsonAnnotationsPaths)))
+    print("Number of Images: {}, number of Image Properties: {}, number of Image Annotations: {}.".format(len(trainImagePaths), len(trainsJsonImagesProperties), len(trainsJsonAnnotationsProperties)))
     
     print("Validations: \r")
-    print("Number of Images: {}, number of Image Properties: {}, number of Image Annotations: {}.".format(len(validationImagePaths), len(validationsJsonImagesPaths), len(validationsJsonAnnotationsPaths)))
+    print("Number of Images: {}, number of Image Properties: {}, number of Image Annotations: {}.".format(len(validationImagePaths), len(validationsJsonImagesProperties), len(validationsJsonAnnotationsProperties)))
 
+def DownloadPunkt():
+    
+    # Download the module punkt and install
+    nltk.download("punkt")
+    
+    
 EnsureConsistency()
+DownloadPunkt()
+
+'''
+'''
