@@ -100,4 +100,6 @@ if os.path.exists(path):
 
 python3 data/build_mscoco_data.py --train_image_dir ../../Datasets/Trains/ --val_image_dir ../../Datasets/Validations/ --train_captions_file ../../Datasets/Merged/Trains.json --val_captions_file ../../Datasets/Merged/Validations.json --output_dir ../../Datasets/Mscoco/ --word_counts_output_file ../../Datasets/Mscoco/WordCounts.txt
 
+python3 train.py --input_file_pattern ../../../Exclusion/Datasets/Mscoco/train-00000-of-00256 --inception_checkpoint_file ../../../Exclusion/Models/inception_v3.ckpt --train_dir ../../../Exclusion/Modles --train_inception False --number_of_steps 10000
+
 '''
