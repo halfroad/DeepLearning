@@ -68,6 +68,6 @@ if os.path.exists(path):
 
 '''
 
-python3 data/build_mscoco_data.py --train_image_dir ../../Datasets/Trains/ --val_image_dir ../../Datasets/Validations/ --train_captions_file ../../Datasets/Merged/Trains.json --val_captions ../../Datasets/Merged/Validations.json --output_dir ../../Datasets/Mscoco/ --word_counts_output_file ../../Datasets/Mscoco/wordCounts.txt
+python3 data/build_mscoco_data.py --train_image_dir ../../Datasets/Trains/ --val_image_dir ../../Datasets/Validations/ --train_captions_file ../../Datasets/Merged/Trains.json --val_captions_file ../../Datasets/Merged/Validations.json --output_dir ../../Datasets/Mscoco/ --word_counts_output_file ../../Datasets/Mscoco/WordCounts.txt
 
 '''
