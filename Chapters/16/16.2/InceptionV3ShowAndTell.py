@@ -1,6 +1,7 @@
 import os
 import json
 import nltk
+import shutil
 
 from glob import glob
 
@@ -54,7 +55,19 @@ def DownloadPunkt():
     
     
 EnsureConsistency()
+
+path = os.path.expanduser("~") + "/nltk_data/"
+
+if not os.path.exists(path):
+    shutil.copytree("../Exclusion/nltk_data/", os.path.expanduser("~") + "/nltk_data/")
+
 DownloadPunkt()
 
+if os.path.exists(path):
+    shutil.rmtree(os.path.expanduser("~") + "/nltk_data")
+
 '''
+
+python3 data/build_mscoco_data.py --train_image_dir ../../Datasets/Trains/ --val_image_dir ../../Datasets/Validations/ --train_captions_file ../../Datasets/Merged/Trains.json --val_captions ../../Datasets/Merged/Validations.json --output_dir ../../Datasets/Mscoco/ --word_counts_output_file ../../Datasets/Mscoco/wordCounts.txt
+
 '''
