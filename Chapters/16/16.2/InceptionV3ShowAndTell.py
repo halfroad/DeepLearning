@@ -53,6 +53,34 @@ def DownloadPunkt():
     # Download the module punkt and install
     nltk.download("punkt")
     
+def RecordsStatistics():
+    
+    records = glob("../Exclusion/Datasets/Mscoco/*")
+    
+    print(records[: 10])
+    
+    trainRecords = []
+    validationRecords = []
+    testRecords = []
+    
+    for record in records:
+        
+        if record.startswith("../Exclusion/Datasets/Mscoco/train"):
+            
+            trainRecords.append(record)
+            
+        elif record.startswith("../Exclusion/Datasets/Mscoco/val"):
+            
+            validationRecords.append(record)
+            
+        elif record.startswith("../Exclusion/Datasets/Mscoco/test"):
+            
+            testRecords.append(record)
+            
+    print("Number of Train Records is {}".format(len(trainRecords)))
+    print("Number of Validation Records is {}".format(len(validationRecords)))
+    print("Number of Test Records is {}".format(len(testRecords)))
+    
     
 EnsureConsistency()
 
@@ -62,6 +90,8 @@ if not os.path.exists(path):
     shutil.copytree("../Exclusion/nltk_data/", os.path.expanduser("~") + "/nltk_data/")
 
 DownloadPunkt()
+
+RecordsStatistics()
 
 if os.path.exists(path):
     shutil.rmtree(os.path.expanduser("~") + "/nltk_data")
