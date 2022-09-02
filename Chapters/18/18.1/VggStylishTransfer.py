@@ -292,9 +292,7 @@ def TrainModel(contentPath, stylePath):
             # Update the best loss and image from all losses
             bestLoss = loss
             bestImage = Reverse(initialImage.numpy())
-         
-        print("Iteration: {}".format(i))
-         
+                  
         # Store the trained data every 100 iterations
         if i % displayInterval == 0:
             
@@ -322,16 +320,18 @@ def TrainModel(contentPath, stylePath):
         
     Image.fromarray(bestImage)
     
+    plt.show()
+    
     
 def Start():
     
     # Content Image
-    imagePath = "../Exclusion/Images/wangjing_selfie.jpg"
+    contentPath = "../Exclusion/Images/wangjing_selfie.jpg"
     
     # Draw the content image
     plt.subplot(1, 2, 1)
     
-    image = LoadImage(imagePath).astype("uint8")
+    image = LoadImage(contentPath).astype("uint8")
         
     PresentImage(image, "Content Image")
     
@@ -343,6 +343,6 @@ def Start():
         
     PresentImage(image, "Stylish Image")
     
-    TrainModel(imagePath, stylePath)
+    TrainModel(contentPath, stylePath)
     
 Start()
