@@ -19,8 +19,6 @@ def LoadImage(imagePath):
      # Load the image
     image = Image.open(imagePath)
     
-    lanczos = Image.Resampling.LANCZOS
-    
     # Resize the image
     image = image.resize((width, height))
     
