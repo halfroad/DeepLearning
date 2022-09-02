@@ -211,7 +211,7 @@ def ComputeVariationLoss(array):
 
 def Generate(function):
     
-    image = np.random.uniform(0, 255, (1, height, width, 3)) - 128.0
+    array = np.random.uniform(0, 255, (1, height, width, 3)) - 128.0
     
     evaluator = Evaluator(function)
         
