@@ -1,9 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
+import tensorflow as tf
+
+tf.compat.v1.disable_eager_execution()
 
 from PIL import Image
 from keras import backend
 from keras.applications.vgg16 import VGG16
+from scipy.optimize import fmin_l_bfgs_b
 
 # Size of image
 width = 512
@@ -85,24 +90,170 @@ def CreateModel(contentImageArray, styleImageArray):
     # Compute the loss for each layer
     for name in featureLayers:
         
-        layerFeatures = layer[name]
+        layerFeatures = layers[name]
+        
         styleFeatures = layerFeatures[1, :, :, :]
         combinationFeatures = layerFeatures[2, :, :, :]
         
         styleLoss = ComputeStyleLoss(styleFeatures, combinationFeatures)
         
-        loss += (styleWeights / len(featureLayers)) * styleLoss
+        loss = loss + (styleWeights / len(featureLayers)) * styleLoss
         
+    layerFeatures = layers["block2_conv2"]
     
+    contentImageFeatures = layerFeatures[0, :, :, :]
+    combinationFeatures = layerFeatures[2, :, :, :]
+    
+    loss += contentWeights * ComputeContentLoss(contentImageFeatures, combinationFeatures)
+    loss += totalVariationWeights * ComputeVariationLoss(combinationImage)
+    
+    # Compute the gradient
+    gradient = backend.gradients(loss, combinationImage)
+    
+    '''
+    with tf.GradientTape() as tape:
         
-def ComputeStyleLoss(style, combination):
+        gradient = tape.gradient(loss, combinationImage)
+    '''
     
-    print("aaa")
+    outputs = [loss]
+    
+    if isinstance(gradient, (list, tuple)):
+        
+        outputs += gradient
+        
+    else:
+        
+        outputs.append(gradient)
+        
+    # Initialize the function of keras
+    outputsFunction = backend.function([combinationImage], outputs)
+    
+    return outputsFunction
+    
+def EvaluateLossGradient(array, function):
+    
+    array = array.reshape((1, height, width, 3))
+    
+    outputs = function([array])
+    
+    lossValue = outputs[0]
+    gradientValue = outputs[1].flatten().astype("float64")
+    
+    return lossValue, gradientValue
+
+class Evaluator(object):
+    
+    def __init__(self, function):
+        
+        self.lossValue = None
+        self.gradientValue = None
+        
+        self.function = function
+        
+    # Compuete the loss
+    def CompueteLoss(self, array):
+        
+        assert self.lossValue is None
+        
+        lossValue, gradientValue = EvaluateLossGradient(array, self.function)
+        
+        self.lossValue = lossValue
+        self.gradientValue = gradientValue
+       
+        return self.lossValue
+    
+    def CompueteGradient(self, array):
+        
+        assert self.lossValue is not None
+        
+        gradientValue = np.copy(self.gradientValue)
+        
+        self.lossValue = None
+        self.gradientValue = None
+        
+        return gradientValue
     
 def ComputeContentLoss(content, combination):
     
     return backend.sum(backend.square(content - combination))
+
+def GramMatrix(array):
     
+    # Transpose the image array, and flatten
+    features = backend.batch_flatten(backend.permute_dimensions(array, (2, 0, 1)))
+    
+    # Return the dot computing
+    gram = backend.dot(features, backend.transpose(features))
+    
+    return gram
+
+# Compuete the Style Loss
+def ComputeStyleLoss(style, combination):
+    
+    # Compute the matrix of gram for style
+    styleGram = GramMatrix(style)
+    
+    # Compuete the matrix ofgram for combination
+    combinationGram = GramMatrix(combination)
+    
+    channels = 3
+    size = height * width
+    
+    loss = backend.sum(backend.square(styleGram - combinationGram)) / (4 * (channels ** 2) * (size ** 2))
+    
+    return loss
+
+def ComputeVariationLoss(array):
+    
+    a = backend.square(array[:, : height - 1, : width - 1, :] - array[:, 1:, : width - 1, :])
+    b = backend.square(array[:, : height - 1, : width - 1, :] - array[:, : height - 1, 1:, :])
+    
+    return backend.sum(backend.pow(a + b, 1.25))
+
+def Generate(function):
+    
+    image = np.random.uniform(0, 255, (1, height, width, 3)) - 128.0
+    
+    evaluator = Evaluator(function)
+        
+    iterations = 10
+    
+    for i in range(iterations):
+        
+        print("Iteration {}".format(i + 1))
+        
+        # Begin clocking
+        beginTime = time.time()
+        
+        # Parameter 0: Expected minimized loss function
+        # Parameter 1: An initialized NumPy array
+        # Parameter 2: Function to compute gradient
+        # Parameter 3: Maximum function to evaliuate
+        array, minimum, info = fmin_l_bfgs_b(evaluator.CompueteLoss, x.flatten(), fprime = evaluator.CompueteGradient, maxfun = 20)
+        
+        print("Minimum = {}".format(minimum))
+        
+        # End clocking ont time
+        endTime = time.time()
+        
+        print("Iteration {} is completed in {:.2f}s".format(i, endTime - beginTime))
+        
+    return array
+
+def ProcessImage(array):
+    
+    array = array.reshape((height, width, 3))
+    array = array[:, :, ::-1]
+    
+    array[:, :, 0] += 103.939
+    array[:, :, 1] += 116.779
+    array[:, :, 2] += 123.68
+    
+    array = np.clip(array, 0, 255).astype("uint8")
+    
+    return array
+
 def Start():
     
     # Content Image
@@ -130,5 +281,12 @@ def Start():
     styleImageArray = Reverse(styleImage)
     
     print("contentImageArray.shape = {}, styleImageArray.shape = {}".format(contentImageArray.shape, styleImageArray.shape))
+    
+    function = CreateModel(contentImageArray, styleImageArray)
+    
+    array = Generate(function)
+    array = ProcessImage(array)
+    
+    Image.fromarray(array)
 
 Start()
