@@ -228,7 +228,7 @@ def Generate(function):
         # Parameter 1: An initialized NumPy array
         # Parameter 2: Function to compute gradient
         # Parameter 3: Maximum function to evaliuate
-        array, minimum, info = fmin_l_bfgs_b(evaluator.CompueteLoss, x.flatten(), fprime = evaluator.CompueteGradient, maxfun = 20)
+        array, minimum, info = fmin_l_bfgs_b(evaluator.CompueteLoss, array.flatten(), fprime = evaluator.CompueteGradient, maxfun = 20)
         
         print("Minimum = {}".format(minimum))
         
