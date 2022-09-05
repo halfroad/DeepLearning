@@ -435,7 +435,7 @@ def Train(epochs, batchSize, zDimensions, learningRate, beta1, functionGetBatche
                 iteration += 1
                 
                 # Print the logs each 10 iterations
-                if iteration % 2 == 0:
+                if iteration % 10 == 0:
                     
                     discriminatorLoss_ = discriminatorLoss.eval({inputZ: z_, inputReal: batchImages})
                     generatorLoss_ = generatorLoss.eval({inputZ: z_})
@@ -443,7 +443,7 @@ def Train(epochs, batchSize, zDimensions, learningRate, beta1, functionGetBatche
                     print("Iteration: {}, discriminatorLoss_ = {:.5f}, generatorLoss_ = {:.5f}".format(iteration, discriminatorLoss_, generatorLoss_))
                     
                 # Preview the image each 50 iterations in order to check the effect
-                if iteration % 3 == 0:
+                if iteration % 50 == 0:
                     
                     ShowGeneratorOutput(sess, 25, inputZ, shape[3], mode)
     
