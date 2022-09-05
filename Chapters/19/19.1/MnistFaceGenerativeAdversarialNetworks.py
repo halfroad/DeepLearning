@@ -457,11 +457,12 @@ def Start():
         
         # Path of MNIST dataset
         ExtractImages(base + "train-images-idx3-ubyte.gz", extraction)
+        paths = glob(extraction + "*.jpg")
         
     print(paths[: 10])
     print(len(paths))
     
-    PlotRandomImages(paths, 25)
+    # PlotRandomImages(paths, 25)
 
     # Batch Size
     batchSize = 64
