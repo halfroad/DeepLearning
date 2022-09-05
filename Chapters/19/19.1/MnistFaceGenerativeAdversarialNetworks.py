@@ -136,13 +136,21 @@ def CreateInputs(width, height, channels, zDimension):
     
     Return: Tuple of (tensor of real input images, tensor of z data, leanring rate
     
-    '''
+    
     
     inputReal = tf.keras.Input(name = "inputReal", shape = (None, width, height, channels), dtype = tf.dtypes.float32)
     inputZ = tf.keras.Input(name = "inputZ", shape = (None, zDimension), dtype = tf.dtypes.float32)
-    learingRate = tf.keras.Input(name = "learingRate", shape = (), dtype = tf.dtypes.float32)
+    learningRate = tf.keras.Input(name = "learningRate", shape = (), dtype = tf.dtypes.float32)
     
-    return inputReal, inputZ, learingRate
+    return inputReal, inputZ, learningRate
+    
+    '''
+    inputReal = tf.placeholder(tf.float32, [None, width, height, channels], name = "inputReal")
+    inputZ = tf.placeholder(tf.float32, [None, zDimension], name = "inputZ")
+    learningRate = tf.placeholder(tf.float32, name = "learningRate")
+    
+    return inputReal, inputZ, learningRate
+    
 
 def EnableLeakyReLU(value, alpha):
     
@@ -163,7 +171,7 @@ def CreateDiscriminator(images, reuse = False):
     
     # Use tf.initializers.glorot_uniform() as the kernel_initializerparameter, this will accelerate the convergence of train
     
-    alpha = 0.2
+    alpha = 1
     
     with tf.variable_scope("discriminator", reuse = reuse):
         
@@ -176,7 +184,7 @@ def CreateDiscriminator(images, reuse = False):
         conv2 = tf.layers.batch_normalization(conv2, training = True)
         # Leaky ReLU
         conv2 = tf.maximum(alpha * conv2, conv2)
-        conv1 = tf.nn.dropout(conv1, 0.9)
+        conv2 = tf.nn.dropout(conv2, 0.9)
         
         conv3 = tf.layers.conv2d(conv2, 256, 5, strides = 2, padding = "same", kernel_initializer = tf.initializers.glorot_uniform())
         conv3 = tf.layers.batch_normalization(conv3, training = True)
@@ -184,7 +192,7 @@ def CreateDiscriminator(images, reuse = False):
         conv3 = tf.maximum(alpha * conv3, conv3)
         conv3 = tf.nn.dropout(conv3, 0.9)
         
-        flat = tf.reshape(conv3, (-4, 4 * 4 * 256))
+        flat = tf.reshape(conv3, (-1, 4 * 4 * 256))
         logits = tf.layers.dense(flat, 1)
         
         output = tf.sigmoid(logits)
@@ -206,7 +214,7 @@ def CreateGenerator(z, outputChannelDimensions, isTrain = True, resue = True):
     
     '''
     
-    alpha = 0.2
+    alpha = 1
     
     with tf.variable_scope("generator", reuse = not isTrain):
         
@@ -223,7 +231,7 @@ def CreateGenerator(z, outputChannelDimensions, isTrain = True, resue = True):
         
         conv2 = tf.layers.conv2d_transpose(conv1, 128, 5, strides = 2, padding = "same")
         conv2 = tf.layers.batch_normalization(conv2, training = isTrain)
-        conv2 = tf.maximum(alpha * conv2, 0.5)
+        conv2 = tf.maximum(alpha * conv2, conv2)
         conv2 = tf.nn.dropout(conv2, 0.5)
         
         logits = tf.layers.conv2d_transpose(conv2, outputChannelDimensions, 5, strides = 1, padding = "same")
@@ -252,17 +260,17 @@ def ComputeLoss(inputReal, inputZ, outputChannelDimensions):
     generatorModel = CreateGenerator(inputZ, outputChannelDimensions)
     
     # Build the model of Discriminator
-    realDiscriminatorModel, realLogits = CreateDiscriminator(inputReal)
-    fakeDiscriminatorModel, fakeLogits = CreateDiscriminator(generatorModel, reuse = True)
+    realDiscriminatorModel, realDiscriminatorLogits = CreateDiscriminator(inputReal)
+    fakeDiscriminatorModel, fakeDiscriminatorLogits = CreateDiscriminator(generatorModel, reuse = True)
     
     # Compute the losses of disciminators for real image and fake image
-    realLoss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = realLogits, labels = tf.ones_like(realDiscriminatorModel) * (1 - smooth)))
-    fakeLoss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = fakeLogits, labels = tf.zeros_like(fakeDiscriminatorModel)))
+    realLoss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = realDiscriminatorLogits, labels = tf.ones_like(realDiscriminatorModel) * (1 - smooth)))
+    fakeLoss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = fakeDiscriminatorLogits, labels = tf.zeros_like(fakeDiscriminatorModel)))
     
     discriminatorLoss = realLoss + fakeLoss
     
     # Compute the loss of Generator
-    generatorLoss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = fakeLogits, labels = tf.ones_like(fakeDiscriminatorModel)))
+    generatorLoss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = fakeDiscriminatorLogits, labels = tf.ones_like(fakeDiscriminatorModel)))
     
     return discriminatorLoss, generatorLoss
 
@@ -284,7 +292,7 @@ def CreateOptimizer(discriminatorLoss, generatorLoss, learningRate, beta1):
     #  Acquire the weights and deviation for the purpose of updating
     
     trainableVariables = tf.trainable_variables()
-    
+        
     discriminatorVariables = [var for var in trainableVariables if var.name.startswith("discriminator")]
     generatorVariables = [var for var in trainableVariables if var.name.startswith("generator")]
     
@@ -292,7 +300,7 @@ def CreateOptimizer(discriminatorLoss, generatorLoss, learningRate, beta1):
     with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
         
         discriminatorTrainOptimizer = tf.train.AdamOptimizer(learningRate, beta1 = beta1).minimize(discriminatorLoss, var_list = discriminatorVariables)
-        generatorTrainOptimizer = tf.train.AdamOptimizer(learningRate, beta1 = beta1).minimize(generatorVariables, var_list = generatorVariables)
+        generatorTrainOptimizer = tf.train.AdamOptimizer(learningRate, beta1 = beta1).minimize(generatorLoss, var_list = generatorVariables)
         
         return discriminatorTrainOptimizer, generatorTrainOptimizer
 
@@ -421,15 +429,17 @@ def Train(epochs, batchSize, zDimensions, learningRate, beta1, functionGetBatche
                 _ = sess.run(discriminatorOptimizer, feed_dict = {inputReal: batchImages * 2, inputZ: z_})
                 
                 # Update the generator
-                _= sess.run(generatorOptimizer, feed_dict = {inputZ: z_, inputReal: batchImages})
+                _ = sess.run(generatorOptimizer, feed_dict = {inputZ: z_, inputReal: batchImages, })
                 
                 iteration += 1
                 
                 # Print the logs each 10 iterations
                 if iteration % 10 == 0:
                     
-                    discriminatorLoss = discriminatorLoss.eval({inputZ: z_, inputReal: batchImages})
-                    generatorLoss = generatorLoss.eval({inputZ: z_})
+                    discriminatorLoss_ = discriminatorLoss.eval({inputZ: z_, inputReal: batchImages})
+                    generatorLoss_ = generatorLoss.eval({inputZ: z_})
+                    
+                    print("Iteration: {}, discriminatorLoss_ = {:.5f}, generatorLoss_ = {:.5f}".format(iteration, discriminatorLoss_, generatorLoss_))
                     
                 # Preview the image each 50 iterations in order to check the effect
                 if iteration % 50 == 0:
@@ -452,7 +462,7 @@ def Start():
     print(len(paths))
     
     PlotRandomImages(paths, 25)
-    
+
     # Batch Size
     batchSize = 64
     # Input Z dimensions

@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 from PIL import Image
 
@@ -55,7 +56,7 @@ class MnistFaceGenerativeAdversarialNetworksDataset(object):
         
         while i + batchSize <= self.shape[0]:
             
-            batch = self.getBatch(self.files[i: i + batchSize], *self.shape[1: 3], mode = self.mode)
+            batch = self.GetBatch(self.files[i: i + batchSize], *self.shape[1: 3], mode = self.mode)
             
             i += batchSize
             
