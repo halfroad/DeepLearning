@@ -443,9 +443,24 @@ def Train(epochs, batchSize, zDimensions, learningRate, beta1, functionGetBatche
                     print("Iteration: {}, discriminatorLoss_ = {:.5f}, generatorLoss_ = {:.5f}".format(iteration, discriminatorLoss_, generatorLoss_))
                     
                 # Preview the image each 50 iterations in order to check the effect
+                '''
+
                 if iteration % 50 == 0:
                     
                     ShowGeneratorOutput(sess, 25, inputZ, shape[3], mode)
+                    
+                '''
+                
+                if mode == "L":
+                    
+                    if iteration % 18740 == 0:
+                        
+                        ShowGeneratorOutput(sess, 25, inputZ, shape[3], mode)
+                else:
+                    
+                    if iteration % 20600 == 0:
+                        
+                        ShowGeneratorOutput(sess, 25, inputZ, shape[3], mode)
     
 def Start():
     
