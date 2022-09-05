@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import tensorflow.compat.v1 as tf
+import math
 
 tf.disable_v2_behavior()
 
