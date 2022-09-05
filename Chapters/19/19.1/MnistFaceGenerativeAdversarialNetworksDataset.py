@@ -107,7 +107,7 @@ class MnistFaceGenerativeAdversarialNetworksDataset(object):
             i = (image.size[1] - faceHeight) // 2
             
             image = image.crop([j, i, j + faceWidth, i + faceHeight])
-            image = image.resize([width, height], IMAGE.BILINEAR)
+            image = image.resize([width, height], Image.BILINEAR)
             
         return np.array(image.convert(mode))
         

@@ -435,7 +435,7 @@ def Train(epochs, batchSize, zDimensions, learningRate, beta1, functionGetBatche
                 iteration += 1
                 
                 # Print the logs each 10 iterations
-                if iteration % 10 == 0:
+                if iteration % 2 == 0:
                     
                     discriminatorLoss_ = discriminatorLoss.eval({inputZ: z_, inputReal: batchImages})
                     generatorLoss_ = generatorLoss.eval({inputZ: z_})
@@ -443,11 +443,17 @@ def Train(epochs, batchSize, zDimensions, learningRate, beta1, functionGetBatche
                     print("Iteration: {}, discriminatorLoss_ = {:.5f}, generatorLoss_ = {:.5f}".format(iteration, discriminatorLoss_, generatorLoss_))
                     
                 # Preview the image each 50 iterations in order to check the effect
-                if iteration % 50 == 0:
+                if iteration % 3 == 0:
                     
                     ShowGeneratorOutput(sess, 25, inputZ, shape[3], mode)
     
 def Start():
+    
+    '''
+
+    mnist
+    
+    '''
     
     base = "../Exclusion/"
     extraction = base + "Extraction/"
@@ -463,7 +469,7 @@ def Start():
     print(paths[: 10])
     print(len(paths))
     
-    # PlotRandomImages(paths, 25)
+    PlotRandomImages(paths, 25)
 
     # Batch Size
     batchSize = 64
@@ -482,5 +488,26 @@ def Start():
     with tf.Graph().as_default():
         
         Train(epochs, batchSize, zDimensions, learningRate, beta1, mnistDataset.GetBatches, mnistDataset.shape, mnistDataset.mode)
+    
+    '''
+
+    lfw
+    
+    '''
+    
+    paths = glob("../../../Share/lfw/*/*.jpg")
+    
+    print(paths[: 10])
+    print(len(paths))
+    
+    # Initialize MNIST dataset via the paths of all MNIST images
+    lfwDataset = MnistFaceGenerativeAdversarialNetworksDataset("lfw", paths)
+    
+    epochs = 100
+    
+    with tf.Graph().as_default():
+        
+        Train(epochs, batchSize, zDimensions, learningRate, beta1, lfwDataset.GetBatches, lfwDataset.shape, lfwDataset.mode)
+
     
 Start()
